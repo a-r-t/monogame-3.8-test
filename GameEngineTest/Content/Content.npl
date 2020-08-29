@@ -1,0 +1,19 @@
+﻿{
+	"root": "",
+	"content": {
+		"textures": {
+			"path": "Images/*.png",
+			"recursive": "True",
+			"action": "build",
+			"importer": "TextureImporter",
+			"processor": "TextureProcessor"
+		},
+		"spritefonts": {
+			"path": "Spritefonts/*.spritefont",
+			"recursive": "True",
+			"action": "build",
+			"importer": "FontDescriptionImporter",
+			"processor": "FontDescriptionProcessor"
+		}
+	}
+}
