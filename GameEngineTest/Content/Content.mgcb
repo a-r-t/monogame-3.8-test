@@ -10,5 +10,66 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:C:/Users/Alex/.nuget/packages/monogame.extended.content.pipeline/3.8.0/tools/MonoGame.Extended.Content.Pipeline.dll
 
 #---------------------------------- Content ---------------------------------#
+
+#begin Images/BugEnemy.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Images/BugEnemy.png
+
+#begin Images/Cat.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Images/Cat.png
+
+#begin Images/CommonTileset.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Images/CommonTileset.png
+
+#begin Images/DefaultTile.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Images/DefaultTile.png
+
+#begin Images/DinosaurEnemy.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Images/DinosaurEnemy.png
+
+#begin Images/Fireball.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Images/Fireball.png
+
+#begin Images/GoldBox.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Images/GoldBox.png
+
+#begin Images/GreenPlatform.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Images/GreenPlatform.png
+
+#begin Images/Walrus.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Images/Walrus.png
+
+#begin Spritefonts/Arial25.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:Spritefonts/Arial25.spritefont
+
+#begin BitmapFonts/Arial_Outline.fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:BitmapFonts/Arial_Outline.fnt
+
+#begin BitmapFonts/Arial_Outline_0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:BitmapFonts/Arial_Outline_0.png
