@@ -13,38 +13,45 @@ namespace GameEngineTest.Engine
 
         public GameState GameState;
         private GameState previousGameState;
-        private ContentManager contentManager;
 
-        public ScreenCoordinator(ContentManager contentManager)
+        public ScreenCoordinator()
         {
-            this.contentManager = contentManager;
             GameState = GameState.MENU;
+            previousGameState = GameState;
+            UpdateCurrentScreen();
         }
 
         public void Update(GameTime gameTime)
         {
             do
             {
-                if (previousGameState != GameState || currentScreen == null)
+                if (previousGameState != GameState)
                 {
-                    switch (GameState)
-                    {
-                        case GameState.MENU:
-                            currentScreen = new MenuScreen(contentManager, this);
-                            break;
-                        case GameState.LEVEL:
-                            //currentScreen = new PlayLevelScreen(this);
-                            break;
-                        case GameState.CREDITS:
-                            //currentScreen = new CreditsScreen(this);
-                            break;
-                    }
-                    currentScreen.Initialize();
+                    currentScreen.UnloadContent();
+                    UpdateCurrentScreen();
                 }
                 previousGameState = GameState;
 
                 currentScreen.Update(gameTime);
             } while (previousGameState != GameState);
+        }
+
+        private void UpdateCurrentScreen()
+        {
+            switch (GameState)
+            {
+                case GameState.MENU:
+                    currentScreen = new MenuScreen(this);
+                    break;
+                case GameState.LEVEL:
+                    //currentScreen = new PlayLevelScreen(this);
+                    break;
+                case GameState.CREDITS:
+                    currentScreen = new CreditsScreen(this);
+                    break;
+            }
+            currentScreen.Initialize();
+            currentScreen.LoadContent();
         }
 
         public void Draw(GraphicsHandler graphicsHandler)

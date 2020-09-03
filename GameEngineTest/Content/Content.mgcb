@@ -73,3 +73,23 @@
 /importer:TextureImporter
 /processor:TextureProcessor
 /build:BitmapFonts/Arial_Outline_0.png
+
+#begin SpriteFonts/Arial25.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:SpriteFonts/Arial25.spritefont
+
+#begin TrueTypeFonts/cat_letters.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:TrueTypeFonts/cat_letters.spritefont
+
+#begin SpriteFonts/TimesNewRoman20.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:SpriteFonts/TimesNewRoman20.spritefont
+
+#begin SpriteFonts/TimesNewRoman30.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:SpriteFonts/TimesNewRoman30.spritefont

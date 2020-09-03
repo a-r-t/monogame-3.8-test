@@ -23,23 +23,26 @@ namespace GameEngineTest.Screens
         protected Stopwatch keyTimer = new Stopwatch();
         protected int pointerLocationX, pointerLocationY;
         protected KeyLocker keyLocker = new KeyLocker();
-        protected ContentManager contentManager;
 
-        public MenuScreen(ContentManager contentManager, ScreenCoordinator screenCoordinator)
+        public MenuScreen(ScreenCoordinator screenCoordinator)
         {
-            this.contentManager = contentManager;
             this.screenCoordinator = screenCoordinator;
         }
 
         public override void Initialize()
         {
-            playGameText = new BitmapFontGraphic("PLAY GAME", contentManager.Load<BitmapFont>("BitmapFonts/Arial_Outline"), new Vector2(200, 150), new Color(49, 207, 240));
-            creditsText = new BitmapFontGraphic("CREDITS", contentManager.Load<BitmapFont>("BitmapFonts/Arial_Outline"), new Vector2(200, 250), new Color(49, 207, 240));
+            playGameText = new BitmapFontGraphic("PLAY GAME", ContentManager.Load<BitmapFont>("BitmapFonts/Arial_Outline"), new Vector2(200, 150), new Color(49, 207, 240));
+            creditsText = new BitmapFontGraphic("CREDITS", ContentManager.Load<BitmapFont>("BitmapFonts/Arial_Outline"), new Vector2(200, 250), new Color(49, 207, 240));
             //background = new TitleScreenMap();
             //background.setAdjustCamera(false);
             keyTimer.SetWaitTime(200);
             menuItemSelected = -1;
             keyLocker.LockKey(Keys.Space);
+        }
+
+        public override void LoadContent()
+        {
+
         }
 
         public override void Update(GameTime gameTime)
@@ -114,11 +117,6 @@ namespace GameEngineTest.Screens
             playGameText.Draw(graphicsHandler);
             creditsText.Draw(graphicsHandler);
             graphicsHandler.DrawFilledRectangleWithBorder(new Rectangle(pointerLocationX, pointerLocationY, 20, 20), new Color(49, 207, 240), Color.Black, 2);
-        }
-
-        public int getMenuItemSelected()
-        {
-            return menuItemSelected;
         }
     }
 }

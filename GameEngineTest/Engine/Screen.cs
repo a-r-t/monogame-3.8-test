@@ -8,8 +8,21 @@ namespace GameEngineTest.Engine
 {
     public abstract class Screen
     {
-        public abstract void Initialize();
-        public abstract void Update(GameTime gameTime);
-        public abstract void Draw(GraphicsHandler graphicsHandler);
+        protected ContentManager ContentManager { get; private set; }
+
+        public Screen()
+        {
+            ContentManager = new ContentManager(GameLoop.GameServiceContainer);
+            ContentManager.RootDirectory = GameLoop.ContentManager.RootDirectory;
+        }
+
+        public virtual void Initialize() { }
+        public virtual void LoadContent() { }
+        public virtual void UnloadContent()
+        {
+            ContentManager.Unload();
+        }
+        public virtual void Update(GameTime gameTime) { }
+        public virtual void Draw(GraphicsHandler graphicsHandler) { }
     }
 }

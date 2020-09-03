@@ -9,7 +9,7 @@
       "processor": "TextureProcessor"
     },
     "spritefonts": {
-      "path": "Spritefonts/*.spritefont",
+      "path": "SpriteFonts/*.spritefont",
       "recursive": "True",
       "action": "build",
       "importer": "FontDescriptionImporter",
@@ -28,6 +28,13 @@
       "action": "build",
       "importer": "TextureImporter",
       "processor": "TextureProcessor"
+    },
+    "truetypefonts": {
+      "path": "TrueTypeFonts/*.spritefont",
+      "recursive": "True",
+      "action": "build",
+      "importer": "FontDescriptionImporter",
+      "processor": "FontDescriptionProcessor"
     }
   }
 }
