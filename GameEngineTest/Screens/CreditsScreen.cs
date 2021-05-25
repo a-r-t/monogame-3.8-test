@@ -31,16 +31,18 @@ namespace GameEngineTest.Screens
             // setup graphics on screen (background map, spritefont text)
             //background = new TitleScreenMap();
             //background.setAdjustCamera(false);
-            creditsLabel = new SpriteFontGraphic("Credits", ContentManager.Load<SpriteFont>("SpriteFonts/TimesNewRoman30"), new Vector2(15, 35), Color.White);
-            createdByLabel = new SpriteFontGraphic("Created by Alex Thimineur for Quinnipiac's SER225 Course.", ContentManager.Load<SpriteFont>("SpriteFonts/TimesNewRoman20"), new Vector2(130, 140), Color.White);
-            contributorsLabel = new SpriteFontGraphic("Thank you to QU Alumni Brian Carducci, Joseph White,\nand Alex Hutman for their contributions.", ContentManager.Load<SpriteFont>("SpriteFonts/TimesNewRoman20"), new Vector2(60, 220), Color.White);
-            returnInstructionsLabel = new SpriteFontGraphic("Press Space to return to the menu", ContentManager.Load<SpriteFont>("SpriteFonts/TimesNewRoman30"), new Vector2(20, 560), Color.White);
+
             keyLocker.LockKey(Keys.Space);
         }
 
         public override void LoadContent()
         {
-
+            SpriteFont timesNewRoman20 = ContentManager.Load<SpriteFont>("SpriteFonts/TimesNewRoman20");
+            SpriteFont timesNewRoman30 = ContentManager.Load<SpriteFont>("SpriteFonts/TimesNewRoman30");
+            creditsLabel = new SpriteFontGraphic("Credits", timesNewRoman30, new Vector2(15, 35), Color.White);
+            createdByLabel = new SpriteFontGraphic("Created by Alex Thimineur for Quinnipiac's SER225 Course.", timesNewRoman20, new Vector2(130, 140), Color.White);
+            contributorsLabel = new SpriteFontGraphic("Thank you to QU Alumni Brian Carducci, Joseph White,\nand Alex Hutman for their contributions.", timesNewRoman20, new Vector2(60, 220), Color.White);
+            returnInstructionsLabel = new SpriteFontGraphic("Press Space to return to the menu", timesNewRoman30, new Vector2(20, 560), Color.White);
         }
 
         public override void Update(GameTime gameTime)

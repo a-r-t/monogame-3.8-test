@@ -31,8 +31,6 @@ namespace GameEngineTest.Screens
 
         public override void Initialize()
         {
-            playGameText = new BitmapFontGraphic("PLAY GAME", ContentManager.Load<BitmapFont>("BitmapFonts/Arial_Outline"), new Vector2(200, 150), new Color(49, 207, 240));
-            creditsText = new BitmapFontGraphic("CREDITS", ContentManager.Load<BitmapFont>("BitmapFonts/Arial_Outline"), new Vector2(200, 250), new Color(49, 207, 240));
             //background = new TitleScreenMap();
             //background.setAdjustCamera(false);
             keyTimer.SetWaitTime(200);
@@ -42,7 +40,9 @@ namespace GameEngineTest.Screens
 
         public override void LoadContent()
         {
-
+            BitmapFont arialOutline = ContentManager.Load<BitmapFont>("BitmapFonts/Arial_Outline");
+            playGameText = new BitmapFontGraphic("PLAY GAME", arialOutline, new Vector2(200, 150), new Color(49, 207, 240));
+            creditsText = new BitmapFontGraphic("CREDITS", arialOutline, new Vector2(200, 250), new Color(49, 207, 240));
         }
 
         public override void Update(GameTime gameTime)

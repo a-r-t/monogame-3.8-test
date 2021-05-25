@@ -17,6 +17,17 @@ namespace GameEngineTest.Engine
             SpriteBatch = spriteBatch;
         }
 
+        public void DrawRectangle(int x, int y, int width, int height, Color color, int borderThickness = 1)
+        {
+            Texture2D rectangleTexture = new Texture2D(GraphicsDevice, 1, 1);
+            rectangleTexture.SetData(new[] { Color.White });
+
+            SpriteBatch.Draw(rectangleTexture, new Rectangle(x, y, borderThickness, height), color);
+            SpriteBatch.Draw(rectangleTexture, new Rectangle(x, y, width + borderThickness, borderThickness), color);
+            SpriteBatch.Draw(rectangleTexture, new Rectangle(x + width, y, borderThickness, height + borderThickness), color);
+            SpriteBatch.Draw(rectangleTexture, new Rectangle(x, y + height, width + borderThickness, borderThickness), color);
+        }
+
         public void DrawRectangle(Rectangle rectangle, Color color, int borderThickness = 1)
         {
             Texture2D rectangleTexture = new Texture2D(GraphicsDevice, 1, 1);
@@ -34,6 +45,14 @@ namespace GameEngineTest.Engine
             rectangleTexture.SetData(new[] { Color.White });
 
             SpriteBatch.Draw(rectangleTexture, rectangle, color);
+        }
+
+        public void DrawFilledRectangle(int x, int y, int width, int height, Color color)
+        {
+            Texture2D rectangleTexture = new Texture2D(GraphicsDevice, 1, 1);
+            rectangleTexture.SetData(new[] { Color.White });
+
+            SpriteBatch.Draw(rectangleTexture, new Rectangle(x, y, width, height), color);
         }
 
         public void DrawFilledRectangleWithBorder(Rectangle rectangle, Color color, Color? borderColor = null, int borderThickness = 1)

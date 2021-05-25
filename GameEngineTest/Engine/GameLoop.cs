@@ -20,6 +20,8 @@ namespace GameEngineTest.Engine
         private ScreenCoordinator screenCoordinator;
         public static ContentManager ContentManager { get; private set; }
         public static GameServiceContainer GameServiceContainer { get; private set; }
+        public static int ViewportWidth { get; private set; }
+        public static int ViewportHeight { get; private set; }
 
         public GameLoop()
         {
@@ -36,6 +38,8 @@ namespace GameEngineTest.Engine
             graphics.PreferredBackBufferWidth = 800;  // set this value to the desired width of your window
             graphics.PreferredBackBufferHeight = 605;   // set this value to the desired height of your window
             graphics.ApplyChanges();
+            ViewportWidth = GraphicsDevice.Viewport.Width;
+            ViewportHeight = GraphicsDevice.Viewport.Height;
         }
 
         protected override void Initialize()
