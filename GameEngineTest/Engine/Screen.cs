@@ -8,7 +8,7 @@ namespace GameEngineTest.Engine
 {
     public abstract class Screen
     {
-        protected ContentLoader ContentManager { get; private set; }
+        public static ContentLoader ContentManager { get; private set; }
 
         public Screen()
         {

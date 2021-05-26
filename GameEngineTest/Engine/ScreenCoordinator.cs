@@ -45,7 +45,7 @@ namespace GameEngineTest.Engine
                     currentScreen = new MenuScreen(this);
                     break;
                 case GameState.LEVEL:
-                    //currentScreen = new PlayLevelScreen(this);
+                    currentScreen = new PlayLevelScreen(this);
                     break;
                 case GameState.CREDITS:
                     currentScreen = new CreditsScreen(this);

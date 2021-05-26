@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using GameEngineTest.Engine;
 using GameEngineTest.Utils;
 using System;
@@ -434,4 +434,3 @@ namespace GameEngineTest.Level
         }
     }
 }
-*/

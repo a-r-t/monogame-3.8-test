@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace GameEngineTest.GameObject
 {
-    public class Rectangle
+    public class Rectangle : IntersectableRectangle
     {
         public float X { get; set; }
         public float Y { get; set; }
@@ -117,14 +117,9 @@ namespace GameEngineTest.GameObject
             return (int)Math.Round(Height * Scale);
         }
 
-        public override String ToString()
-        {
-            return String.Format("Rectangle: x=%s y=%s width=%s height=%s", X, Y, GetScaledWidth(), GetScaledHeight());
-        }
+        public virtual void Update() { }
 
-        public void Update() { }
-
-        public void Draw(GraphicsHandler graphicsHandler)
+        public virtual void Draw(GraphicsHandler graphicsHandler)
         {
             graphicsHandler.DrawFilledRectangle((int)Math.Round(X), (int)Math.Round(X), GetScaledWidth(), GetScaledHeight(), Color);
             if (BorderColor != null && !BorderColor.Equals(Color))
@@ -133,13 +128,13 @@ namespace GameEngineTest.GameObject
             }
         }
 
-        public Rectangle GetIntersectRectangle()
+        public virtual Rectangle GetIntersectRectangle()
         {
             return new Rectangle(X, Y, GetScaledWidth(), GetScaledHeight());
         }
 
         // check if this intersects with another rectangle
-        public bool intersects(IntersectableRectangle other)
+        public bool Intersects(IntersectableRectangle other)
         {
             Rectangle intersectRectangle = GetIntersectRectangle();
             Rectangle otherIntersectRectangle = other.GetIntersectRectangle();
@@ -148,12 +143,17 @@ namespace GameEngineTest.GameObject
         }
 
         // check if this overlaps with another rectangle
-        public bool overlaps(IntersectableRectangle other)
+        public bool Overlaps(IntersectableRectangle other)
         {
             Rectangle intersectRectangle = GetIntersectRectangle();
             Rectangle otherIntersectRectangle = other.GetIntersectRectangle();
             return Math.Round(intersectRectangle.GetX1()) <= Math.Round(otherIntersectRectangle.GetX2()) && Math.Round(intersectRectangle.GetX2()) >= Math.Round(otherIntersectRectangle.GetX1()) &&
                     Math.Round(intersectRectangle.GetY1()) <= Math.Round(otherIntersectRectangle.GetY2()) && Math.Round(intersectRectangle.GetY2()) >= Math.Round(otherIntersectRectangle.GetY1());
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Rectangle: x=%s y=%s width=%s height=%s", X, Y, GetScaledWidth(), GetScaledHeight());
         }
     }
 }
