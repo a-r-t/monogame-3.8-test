@@ -40,7 +40,7 @@ namespace GameEngineTest.Screens
 
         public override void LoadContent()
         {
-            BitmapFont arialOutline = ContentManager.Load<BitmapFont>("BitmapFonts/Arial_Outline");
+            BitmapFont arialOutline = ContentManager.LoadBitmapFont("BitmapFonts/Arial_Outline");
             playGameText = new BitmapFontGraphic("PLAY GAME", arialOutline, new Vector2(200, 150), new Color(49, 207, 240));
             creditsText = new BitmapFontGraphic("CREDITS", arialOutline, new Vector2(200, 250), new Color(49, 207, 240));
         }

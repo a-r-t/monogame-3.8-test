@@ -37,8 +37,8 @@ namespace GameEngineTest.Screens
 
         public override void LoadContent()
         {
-            SpriteFont timesNewRoman20 = ContentManager.Load<SpriteFont>("SpriteFonts/TimesNewRoman20");
-            SpriteFont timesNewRoman30 = ContentManager.Load<SpriteFont>("SpriteFonts/TimesNewRoman30");
+            SpriteFont timesNewRoman20 = ContentManager.LoadSpriteFont("SpriteFonts/TimesNewRoman20");
+            SpriteFont timesNewRoman30 = ContentManager.LoadSpriteFont("SpriteFonts/TimesNewRoman30");
             creditsLabel = new SpriteFontGraphic("Credits", timesNewRoman30, new Vector2(15, 35), Color.White);
             createdByLabel = new SpriteFontGraphic("Created by Alex Thimineur for Quinnipiac's SER225 Course.", timesNewRoman20, new Vector2(130, 140), Color.White);
             contributorsLabel = new SpriteFontGraphic("Thank you to QU Alumni Brian Carducci, Joseph White,\nand Alex Hutman for their contributions.", timesNewRoman20, new Vector2(60, 220), Color.White);

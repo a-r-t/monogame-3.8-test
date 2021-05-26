@@ -8,11 +8,11 @@ namespace GameEngineTest.Engine
 {
     public abstract class Screen
     {
-        protected ContentManager ContentManager { get; private set; }
+        protected ContentLoader ContentManager { get; private set; }
 
         public Screen()
         {
-            ContentManager = new ContentManager(GameLoop.GameServiceContainer);
+            ContentManager = new ContentLoader(GameLoop.GameServiceContainer, GameLoop.ContentManager.RootDirectory);
             ContentManager.RootDirectory = GameLoop.ContentManager.RootDirectory;
         }
 
