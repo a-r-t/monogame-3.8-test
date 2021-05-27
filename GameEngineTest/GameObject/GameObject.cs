@@ -1,4 +1,5 @@
-﻿using GameEngineTest.Engine;
+﻿using GameEngineTest.Builders;
+using GameEngineTest.Engine;
 using GameEngineTest.Level;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework;
@@ -66,7 +67,7 @@ namespace GameEngineTest.GameObject
 		{
 			this.animations = new Dictionary<string, Frame[]>();
 			this.animations.Add("DEFAULT", new Frame[] {
-				new FrameBuilder(image, 0).build()
+				new FrameBuilder(image, 0).Build()
 			});
 			
 			this.currentAnimationName = "DEFAULT";
@@ -83,8 +84,8 @@ namespace GameEngineTest.GameObject
 			this.animations = new Dictionary<string, Frame[]>();
 			this.animations.Add("DEFAULT", new Frame[] {
 				new FrameBuilder(image, 0)
-					.withScale(scale)
-					.build()
+					.WithScale(scale)
+					.Build()
 			});
 			this.currentAnimationName = "DEFAULT";
 			UpdateCurrentFrame();
@@ -100,9 +101,9 @@ namespace GameEngineTest.GameObject
 			this.animations = new Dictionary<string, Frame[]>();
 			this.animations.Add("DEFAULT", new Frame[] {
 				new FrameBuilder(image, 0)
-					.withScale(scale)
-					.withImageEffect(spriteEffect)
-					.build()
+					.WithScale(scale)
+					.WithSpriteEffect(spriteEffect)
+					.Build()
 			});
 			this.currentAnimationName = "DEFAULT";
 			UpdateCurrentFrame();
@@ -118,10 +119,10 @@ namespace GameEngineTest.GameObject
 			this.animations = new Dictionary<string, Frame[]>();
 			this.animations.Add("DEFAULT", new Frame[]{
 				new FrameBuilder(image, 0)
-					.withScale(scale)
-					.withImageEffect(spriteEffect)
-					.withBounds(bounds)
-					.build()
+					.WithScale(scale)
+					.WithSpriteEffect(spriteEffect)
+					.WithBounds(bounds)
+					.Build()
 			});
 			this.currentAnimationName = "DEFAULT";
 			UpdateCurrentFrame();
@@ -335,12 +336,13 @@ namespace GameEngineTest.GameObject
 			if (map != null)
 			{
 				graphicsHandler.DrawImage(
-						currentFrame.getImage(),
-						Math.Round(GetCalibratedXLocation()),
-						Math.Round(GetCalibratedYLocation()),
-						currentFrame.getScaledWidth(),
-						currentFrame.getScaledHeight(),
-						currentFrame.getImageEffect());
+					currentFrame.Image,
+					new Vector2(
+						(float)Math.Round(GetCalibratedXLocation()),
+						(float)Math.Round(GetCalibratedYLocation())
+					),
+					spriteEffects: currentFrame.SpriteEffect
+				);
 			}
 			else
 			{
