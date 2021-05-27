@@ -92,11 +92,11 @@ namespace GameEngineTest.Level
         // reads in a map file to create the map's tilemap
         private void LoadMapFile()
         {
-            Scanner fileInput;
+            StreamReader fileInput;
             try
             {
                 // open map file that is located in the MAP_FILES_PATH directory
-                fileInput = new Scanner(new File(Config.MAP_FILES_PATH + this.mapFileName));
+                fileInput = new StreamReader(Config.MAP_FILES_PATH + this.mapFileName);
             }
             catch (FileNotFoundException ex)
             {
@@ -106,56 +106,59 @@ namespace GameEngineTest.Level
                 try
                 {
                     CreateEmptyMapFile();
-                    fileInput = new Scanner(new File(Config.MAP_FILES_PATH + this.mapFileName));
+                    fileInput = new StreamReader(Config.MAP_FILES_PATH + this.mapFileName);
                 }
                 catch (IOException ex2)
                 {
                     Debug.WriteLine(ex2.Message);
                     Debug.WriteLine("Failed to create an empty map file!");
-                    throw new IOExcepion();
+                    throw new IOException();
                 }
             }
 
             // read in map width and height from the first line of map file
-            this.width = fileInput.nextInt();
-            this.height = fileInput.nextInt();
+            string[] dimensions = fileInput.ReadLine().Split(" ");
+            this.width = Convert.ToInt32(dimensions[0]);
+            this.height = Convert.ToInt32(dimensions[1]);
 
             // define array size for map tiles, which is width * height (this is a standard array, NOT a 2D array)
             this.mapTiles = new MapTile[this.height * this.width];
-            fileInput.nextLine();
+            string[] tileIndexes = fileInput.ReadToEnd().Split(" ");
 
             // read in each tile index from the map file, use the defined tileset to get the associated MapTile to that tileset, and place it in the array
+            int currentTileIndex = 0;
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
-                    int tileIndex = fileInput.nextInt();
+                    int tileIndex = currentTileIndex;
                     int xLocation = j * tileset.GetScaledSpriteWidth();
                     int yLocation = i * tileset.GetScaledSpriteHeight();
                     MapTile tile = tileset.GetTile(tileIndex).build(xLocation, yLocation);
                     tile.SetMap(this);
                     SetMapTile(j, i, tile);
+                    currentTileIndex++;
                 }
             }
 
-            fileInput.close();
+            fileInput.Close();
         }
 
         // creates an empty map file for this map if one does not exist
         // defaults the map dimensions to 0x0
         private void CreateEmptyMapFile() //throws IOException
         {
-            FileWriter fileWriter = null;
-            fileWriter = new FileWriter(Config.MAP_FILES_PATH + this.mapFileName);
-            fileWriter.write("0 0\n");
-            fileWriter.close();
+            StreamWriter fileWriter = null;
+            fileWriter = new StreamWriter(Config.MAP_FILES_PATH + this.mapFileName);
+            fileWriter.Write("0 0\n");
+            fileWriter.Close();
         }
 
         // gets player start position based on player start tile (basically the start tile's position on the map)
         public Point GetPlayerStartPosition()
         {
-            MapTile tile = GetMapTile(Math.Round(playerStartTile.X), Math.Round(playerStartTile.y));
-            return new Point(tile.getX(), tile.getY());
+            MapTile tile = GetMapTile((int)Math.Round(playerStartTile.X), (int)Math.Round(playerStartTile.Y));
+            return new Point(tile.GetX(), tile.GetY());
         }
 
         // get position on the map based on a specfic tile index
@@ -170,7 +173,7 @@ namespace GameEngineTest.Level
             return tileset;
         }
 
-        public String GetMapFileName()
+        public string GetMapFileName()
         {
             return mapFileName;
         }

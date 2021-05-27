@@ -77,6 +77,8 @@ namespace GameEngineTest.GameObject
 			this.currentAnimationName = "";
 		}
 
+		public virtual void Initialize() { }
+
 		public virtual void Update()
 		{
 			// if animation name has been changed (previous no longer equals current), setup for the new animation and start using it

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+// Builder class to instantiate a Frame class
 namespace GameEngineTest.Builders
 {
     public class FrameBuilder

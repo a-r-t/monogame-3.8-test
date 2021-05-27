@@ -19,7 +19,7 @@ namespace GameEngineTest.Screens
         protected int menuItemSelected = -1;
         protected BitmapFontGraphic playGameText;
         protected BitmapFontGraphic creditsText;
-        //protected Map background;
+        protected Map background;
         protected Stopwatch keyTimer = new Stopwatch();
         protected int pointerLocationX, pointerLocationY;
         protected KeyLocker keyLocker = new KeyLocker();
@@ -31,8 +31,8 @@ namespace GameEngineTest.Screens
 
         public override void Initialize()
         {
-            //background = new TitleScreenMap();
-            //background.setAdjustCamera(false);
+            background = new TitleScreenMap();
+            background.setAdjustCamera(false);
             keyTimer.SetWaitTime(200);
             menuItemSelected = -1;
             keyLocker.LockKey(Keys.Space);
@@ -50,7 +50,7 @@ namespace GameEngineTest.Screens
             keyTimer.Tick(gameTime.ElapsedGameTime.TotalMilliseconds);
 
             // update background map (to play tile animations)
-            //background.update(null);
+            background.update(null);
 
             KeyboardState keyboardState = Keyboard.GetState();
 
@@ -113,7 +113,7 @@ namespace GameEngineTest.Screens
 
         public override void Draw(GraphicsHandler graphicsHandler)
         {
-            //background.Draw(graphicsHandler);
+            background.Draw(graphicsHandler);
             playGameText.Draw(graphicsHandler);
             creditsText.Draw(graphicsHandler);
             graphicsHandler.DrawFilledRectangleWithBorder(new Rectangle(pointerLocationX, pointerLocationY, 20, 20), new Color(49, 207, 240), Color.Black, 2);
