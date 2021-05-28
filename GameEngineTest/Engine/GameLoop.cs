@@ -18,6 +18,8 @@ namespace GameEngineTest.Engine
         private SpriteFont font;
         private BitmapFont testFont;
         private ScreenCoordinator screenCoordinator;
+        private ScreenManager screenManager;
+        public static GraphicsDeviceManager GraphicsDeviceManager { get; private set; }
         public static ContentManager ContentManager { get; private set; }
         public static GameServiceContainer GameServiceContainer { get; private set; }
         public static int ViewportWidth { get; private set; }
@@ -26,6 +28,7 @@ namespace GameEngineTest.Engine
         public GameLoop()
         {
             graphics = new GraphicsDeviceManager(this);
+            GraphicsDeviceManager = graphics;
             graphics.PreferMultiSampling = true;
             graphics.SynchronizeWithVerticalRetrace = false;
             graphics.ApplyChanges();
@@ -47,6 +50,8 @@ namespace GameEngineTest.Engine
             spriteBatch = new SpriteBatch(GraphicsDevice);
             graphicsHandler = new GraphicsHandler(GraphicsDevice, spriteBatch);
             screenCoordinator = new ScreenCoordinator();
+            screenManager = new ScreenManager();
+            screenManager.SetCurrentScreen(screenCoordinator);
 
             // TODO: Add your initialization logic here
             base.Initialize();
@@ -68,7 +73,7 @@ namespace GameEngineTest.Engine
             }
 
             // TODO: Add your update logic here
-            screenCoordinator.Update(gameTime);
+            screenManager.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -98,7 +103,7 @@ namespace GameEngineTest.Engine
 
                         spriteBatch.DrawString(testFont, "TEST", new Vector2(500, 100), Color.Green);*/
 
-            screenCoordinator.Draw(graphicsHandler);
+            screenManager.Draw(graphicsHandler);
 
 
             spriteBatch.End();

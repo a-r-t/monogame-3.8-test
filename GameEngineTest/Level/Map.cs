@@ -54,8 +54,8 @@ namespace GameEngineTest.Level
             SetupMap();
             this.startBoundX = 0;
             this.startBoundY = 0;
-            this.endBoundX = width * tileset.getScaledSpriteWidth();
-            this.endBoundY = height * tileset.getScaledSpriteHeight();
+            this.endBoundX = width * tileset.GetScaledSpriteWidth();
+            this.endBoundY = height * tileset.GetScaledSpriteHeight();
             this.xMidPoint = GameLoop.ViewportWidth / 2;
             this.yMidPoint = GameLoop.ViewportHeight / 2;
             this.playerStartTile = playerStartTile;
@@ -71,7 +71,7 @@ namespace GameEngineTest.Level
             this.enemies = LoadEnemies();
             foreach (Enemy enemy in this.enemies)
             {
-                enemy.setMap(this);
+                enemy.SetMap(this);
             }
 
             this.enhancedMapTiles = LoadEnhancedMapTiles();
@@ -134,7 +134,7 @@ namespace GameEngineTest.Level
                     int tileIndex = currentTileIndex;
                     int xLocation = j * tileset.GetScaledSpriteWidth();
                     int yLocation = i * tileset.GetScaledSpriteHeight();
-                    MapTile tile = tileset.GetTile(tileIndex).build(xLocation, yLocation);
+                    MapTile tile = tileset.GetTile(tileIndex).Build(xLocation, yLocation);
                     tile.SetMap(this);
                     SetMapTile(j, i, tile);
                     currentTileIndex++;
@@ -200,12 +200,12 @@ namespace GameEngineTest.Level
 
         public int GetWidthPixels()
         {
-            return width * tileset.getScaledSpriteWidth();
+            return width * tileset.GetScaledSpriteWidth();
         }
 
         public int GetHeightPixels()
         {
-            return height * tileset.getScaledSpriteHeight();
+            return height * tileset.GetScaledSpriteHeight();
         }
 
         public MapTile[] getMapTiles()
@@ -254,8 +254,8 @@ namespace GameEngineTest.Level
         // returns the index of a tile (x index and y index) based on a position in the map
         public Point GetTileIndexByPosition(float xPosition, float yPosition)
         {
-            int xIndex = Math.Round(xPosition) / tileset.getScaledSpriteWidth();
-            int yIndex = Math.Round(yPosition) / tileset.getScaledSpriteHeight();
+            int xIndex = Math.Round(xPosition) / tileset.GetScaledSpriteWidth();
+            int yIndex = Math.Round(yPosition) / tileset.GetScaledSpriteHeight();
             return new Point(xIndex, yIndex);
         }
 
@@ -380,15 +380,15 @@ namespace GameEngineTest.Level
                 }
             }
             // if player goes past center screen (on the left side) and there is more map to show on the left side, push player back to center and move camera backwards
-            else if (player.GetCalibratedXLocation() < xMidPoint && camera.GetX() > startBoundX)
+            else if (player.GetCalibratedXLocation() < xMidPoint && camera.X > startBoundX)
             {
                 float xMidPointDifference = xMidPoint - player.GetCalibratedXLocation();
                 camera.MoveX(-xMidPointDifference);
 
                 // if camera moved past the left edge of the map as a result from the move above, move camera back and push player backward
-                if (camera.GetX() < startBoundX)
+                if (camera.X < startBoundX)
                 {
-                    float cameraDifference = startBoundX - camera.GetX();
+                    float cameraDifference = startBoundX - camera.X;
                     camera.MoveX(cameraDifference);
                 }
             }
@@ -412,15 +412,15 @@ namespace GameEngineTest.Level
                 }
             }
             // if player goes past center screen (above) and there is more map to show above, push player back to center and move camera upwards
-            else if (player.GetCalibratedYLocation() < yMidPoint && camera.GetY() > startBoundY)
+            else if (player.GetCalibratedYLocation() < yMidPoint && camera.Y > startBoundY)
             {
                 float yMidPointDifference = yMidPoint - player.GetCalibratedYLocation();
                 camera.MoveY(-yMidPointDifference);
 
                 // if camera moved past the top of the map as a result from the move above, move camera downwards and push player upwards
-                if (camera.GetY() < startBoundY)
+                if (camera.Y < startBoundY)
                 {
-                    float cameraDifference = startBoundY - camera.GetY();
+                    float cameraDifference = startBoundY - camera.Y;
                     camera.MoveY(cameraDifference);
                 }
             }

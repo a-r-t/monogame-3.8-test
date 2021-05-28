@@ -8,12 +8,12 @@ using Microsoft.Xna.Framework.Content;
 
 namespace GameEngineTest.Engine
 {
-    public class ScreenCoordinator
+    public class ScreenCoordinator : Screen
     {
-        private Screen currentScreen;
+        private Screen currentScreen = new DefaultScreen();
 
-        public GameState GameState;
-        private GameState previousGameState;
+        public GameState GameState { get; set; }
+        protected GameState previousGameState;
 
         public ScreenCoordinator()
         {
@@ -22,7 +22,13 @@ namespace GameEngineTest.Engine
             UpdateCurrentScreen();
         }
 
-        public void Update(GameTime gameTime)
+        public override void Initialize()
+        {
+            // start game off with Menu Screen
+            GameState = GameState.MENU;
+        }
+
+        public override void Update(GameTime gameTime)
         {
             do
             {
@@ -55,7 +61,7 @@ namespace GameEngineTest.Engine
             currentScreen.LoadContent();
         }
 
-        public void Draw(GraphicsHandler graphicsHandler)
+        public override void Draw(GraphicsHandler graphicsHandler)
         {
             currentScreen.Draw(graphicsHandler);
         }

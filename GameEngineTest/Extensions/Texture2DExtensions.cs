@@ -1,5 +1,4 @@
-﻿using GameEngineTest.GameObject;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ namespace GameEngineTest.Extensions
 {
     public static class Texture2DExtensions
     {
-        public static Texture2D Crop(this Texture2D image, GameObject.Rectangle source)
+        public static Texture2D Crop(this Texture2D image, Rectangle source)
         {
             var graphics = image.GraphicsDevice;
             var ret = new RenderTarget2D(graphics, source.Width, source.Height);

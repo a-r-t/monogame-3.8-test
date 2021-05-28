@@ -20,42 +20,42 @@ namespace GameEngineTest.Level
         public NPC(float x, float y, SpriteSheet spriteSheet, String startingAnimation, int talkedToTime)
             : base(x, y, spriteSheet, startingAnimation)
         {
-            this.message = createMessage();
+            this.message = CreateMessage();
             this.talkedToTime = talkedToTime;
         }
 
         public NPC(float x, float y, Dictionary<string, Frame[]> animations, String startingAnimation, int talkedToTime)
             :base(x, y, animations, startingAnimation)
         {
-            this.message = createMessage();
+            this.message = CreateMessage();
             this.talkedToTime = talkedToTime;
         }
 
         public NPC(Texture2D image, float x, float y, String startingAnimation, int talkedToTime)
             : base(image, x, y, startingAnimation)
         {
-            this.message = createMessage();
+            this.message = CreateMessage();
             this.talkedToTime = talkedToTime;
         }
 
         public NPC(Texture2D image, float x, float y, int talkedToTime)
             : base(image, x, y)
         {
-            this.message = createMessage();
+            this.message = CreateMessage();
             this.talkedToTime = talkedToTime;
         }
 
         public NPC(Texture2D image, float x, float y, int talkedToTime, float scale)
             : base(image, x, y, scale)
         {
-            this.message = createMessage();
+            this.message = CreateMessage();
             this.talkedToTime = talkedToTime;
         }
 
         public NPC(Texture2D image, float x, float y, int talkedToTime, float scale, SpriteEffects spriteEffect)
             : base(image, x, y, scale, spriteEffect)
         {
-            this.message = createMessage();
+            this.message = CreateMessage();
             this.talkedToTime = talkedToTime;
         }
 
