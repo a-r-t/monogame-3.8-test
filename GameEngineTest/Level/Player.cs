@@ -59,7 +59,7 @@ namespace GameEngineTest.Level
 
         public override void Update()
         {
-            Debug.WriteLine("X: " + GetX() + " Y: " + GetY());
+            //Debug.WriteLine("X: " + GetX() + " Y: " + GetY());
             KeyboardState keyboardState = Keyboard.GetState();
 
             moveAmountX = 0;

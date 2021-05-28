@@ -49,7 +49,7 @@ namespace GameEngineTest.Screens
 
         public override void Update(GameTime gameTime)
         {
-            keyTimer.Tick(gameTime.ElapsedGameTime.TotalMilliseconds);
+            //keyTimer.Tick(gameTime.ElapsedGameTime.TotalMilliseconds);
 
             // update background map (to play tile animations)
             background.Update(null);
