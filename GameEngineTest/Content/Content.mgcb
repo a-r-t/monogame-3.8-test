@@ -93,3 +93,13 @@
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /build:SpriteFonts/TimesNewRoman30.spritefont
+
+#begin SpriteFonts/ComicSans30.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:SpriteFonts/ComicSans30.spritefont
+
+#begin SpriteFonts/ComicSans20.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:SpriteFonts/ComicSans20.spritefont

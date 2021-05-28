@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace GameEngineTest.Level
@@ -123,7 +124,7 @@ namespace GameEngineTest.Level
 
             // define array size for map tiles, which is width * height (this is a standard array, NOT a 2D array)
             this.mapTiles = new MapTile[this.height * this.width];
-            string[] tileIndexes = fileInput.ReadToEnd().Split(" ");
+            int[] tileIndexes = fileInput.ReadToEnd().Split(" ").Select(tileIndexStr => Convert.ToInt32(tileIndexStr)).ToArray();
 
             // read in each tile index from the map file, use the defined tileset to get the associated MapTile to that tileset, and place it in the array
             int currentTileIndex = 0;
@@ -131,7 +132,7 @@ namespace GameEngineTest.Level
             {
                 for (int j = 0; j < width; j++)
                 {
-                    int tileIndex = currentTileIndex;
+                    int tileIndex = tileIndexes[currentTileIndex];
                     int xLocation = j * tileset.GetScaledSpriteWidth();
                     int yLocation = i * tileset.GetScaledSpriteHeight();
                     MapTile tile = tileset.GetTile(tileIndex).Build(xLocation, yLocation);

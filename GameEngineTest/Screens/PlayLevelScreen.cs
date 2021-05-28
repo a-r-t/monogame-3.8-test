@@ -52,7 +52,7 @@ namespace GameEngineTest.Screens
                 // if level has been completed, bring up level cleared screen
                 case PlayLevelScreenState.LEVEL_COMPLETED:
                     levelClearedScreen = new LevelClearedScreen();
-                    levelClearedScreen.initialize();
+                    levelClearedScreen.Initialize();
                     screenTimer.SetWaitTime(2500);
                     playLevelScreenState = PlayLevelScreenState.LEVEL_WIN_MESSAGE;
                     break;
@@ -67,12 +67,12 @@ namespace GameEngineTest.Screens
                 // if player died in level, bring up level lost screen
                 case PlayLevelScreenState.PLAYER_DEAD:
                     levelLoseScreen = new LevelLoseScreen(this);
-                    levelLoseScreen.initialize();
+                    levelLoseScreen.Initialize();
                     playLevelScreenState = PlayLevelScreenState.LEVEL_LOSE_MESSAGE;
                     break;
                 // wait on level lose screen to make a decision (either resets level or sends player back to main menu)
                 case PlayLevelScreenState.LEVEL_LOSE_MESSAGE:
-                    levelLoseScreen.update();
+                    levelLoseScreen.Update(gameTime);
                     break;
             }
         }
@@ -89,10 +89,10 @@ namespace GameEngineTest.Screens
                     player.Draw(graphicsHandler);
                     break;
                 case PlayLevelScreenState.LEVEL_WIN_MESSAGE:
-                    levelClearedScreen.draw(graphicsHandler);
+                    levelClearedScreen.Draw(graphicsHandler);
                     break;
                 case PlayLevelScreenState.LEVEL_LOSE_MESSAGE:
-                    levelLoseScreen.draw(graphicsHandler);
+                    levelLoseScreen.Draw(graphicsHandler);
                     break;
             }
         }
