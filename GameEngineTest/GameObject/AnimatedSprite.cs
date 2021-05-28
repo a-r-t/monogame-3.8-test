@@ -86,13 +86,13 @@ namespace GameEngineTest.GameObject
 			{
 				currentFrameIndex = 0;
 				UpdateCurrentFrame();
-				frameTimer.SetWaitTime(GetCurrentFrame().getDelay());
+				frameTimer.SetWaitTime(GetCurrentFrame().GetDelay());
 				hasAnimationLooped = false;
 			}
 			else
 			{
 				// if animation has more than one frame, check if it's time to transition to a new frame based on that frame's delay
-				if (GetCurrentAnimation().Length > 1 && currentFrame.getDelay() > 0)
+				if (GetCurrentAnimation().Length > 1 && currentFrame.GetDelay() > 0)
 				{
 
 					// if enough time has passed based on current frame's delay and it's time to transition to a new frame,
@@ -106,7 +106,7 @@ namespace GameEngineTest.GameObject
 							currentFrameIndex = 0;
 							hasAnimationLooped = true;
 						}
-						frameTimer.SetWaitTime(GetCurrentFrame().getDelay());
+						frameTimer.SetWaitTime(GetCurrentFrame().GetDelay());
 						UpdateCurrentFrame();
 					}
 				}

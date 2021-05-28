@@ -1,8 +1,10 @@
-﻿using GameEngineTest.GameObject;
+﻿using GameEngineTest.Extensions;
+using GameEngineTest.GameObject;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace GameEngineTest.Level
@@ -57,6 +59,7 @@ namespace GameEngineTest.Level
 
         public override void Update()
         {
+            Debug.WriteLine("X: " + GetX() + " Y: " + GetY());
             KeyboardState keyboardState = Keyboard.GetState();
 
             moveAmountX = 0;
@@ -247,7 +250,7 @@ namespace GameEngineTest.Level
                 }
 
                 // if player is moving upwards, set player's animation to jump. if player moving downwards, set player's animation to fall
-                if (previousY > Math.Round(y))
+                if (previousY > y.Round())
                 {
                     currentAnimationName = FacingDirection == Direction.RIGHT ? "JUMP_RIGHT" : "JUMP_LEFT";
                 }

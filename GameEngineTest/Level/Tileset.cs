@@ -1,5 +1,6 @@
 ﻿using GameEngineTest.Builders;
 using GameEngineTest.Engine;
+using GameEngineTest.Extensions;
 using GameEngineTest.GameObject;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -52,12 +53,12 @@ namespace GameEngineTest.Level
 
         public int GetScaledSpriteWidth()
         {
-            return (int)Math.Round(SpriteWidth * tileScale);
+            return SpriteWidth * tileScale.Round();
         }
 
         public int GetScaledSpriteHeight()
         {
-            return (int)Math.Round(SpriteHeight * tileScale);
+            return SpriteHeight * tileScale.Round();
         }
 
         // maps all tiles to a tile index, which is how it is identified by the map file

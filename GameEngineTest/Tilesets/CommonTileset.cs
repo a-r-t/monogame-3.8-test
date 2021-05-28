@@ -1,5 +1,4 @@
 ﻿using GameEngineTest.Builders;
-using GameEngineTest.Builders;
 using GameEngineTest.Engine;
 using GameEngineTest.GameObject;
 using GameEngineTest.Level;
@@ -13,7 +12,7 @@ namespace GameEngineTest.Tilesets
 {
     public class CommonTileset : Tileset
     {
-        public CommonTileset() : base(Screen.ContentManager.LoadTexture("CommonTileset.png"), 16, 16, 3)
+        public CommonTileset() : base(Screen.ContentManager.LoadTexture("Images/CommonTileset"), 16, 16, 3)
         {
         }
 

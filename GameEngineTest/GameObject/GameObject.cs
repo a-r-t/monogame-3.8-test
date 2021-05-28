@@ -1,11 +1,13 @@
 ﻿using GameEngineTest.Builders;
 using GameEngineTest.Engine;
+using GameEngineTest.Extensions;
 using GameEngineTest.Level;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 /*
@@ -313,10 +315,10 @@ namespace GameEngineTest.GameObject
 			{
 				Rectangle scaledBounds = GetScaledBounds();
 				return new Rectangle(
-						scaledBounds.GetX1() - map.GetCamera().X,
-						scaledBounds.GetY1() - map.GetCamera().Y,
-						scaledBounds.GetScaledWidth(),
-						scaledBounds.GetScaledHeight()
+					scaledBounds.GetX1() - map.GetCamera().X,
+					scaledBounds.GetY1() - map.GetCamera().Y,
+					scaledBounds.GetScaledWidth(),
+					scaledBounds.GetScaledHeight()
 				);
 			}
 			else
@@ -338,10 +340,11 @@ namespace GameEngineTest.GameObject
 				graphicsHandler.DrawImage(
 					currentFrame.Image,
 					new Vector2(
-						(float)Math.Round(GetCalibratedXLocation()),
-						(float)Math.Round(GetCalibratedYLocation())
+						GetCalibratedXLocation().Round(),
+						GetCalibratedYLocation().Round()
 					),
-					spriteEffects: currentFrame.SpriteEffect
+					spriteEffects: currentFrame.SpriteEffect,
+					scale: new Vector2(currentFrame.Scale, currentFrame.Scale)
 				);
 			}
 			else

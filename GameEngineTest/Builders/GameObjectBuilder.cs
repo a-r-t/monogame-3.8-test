@@ -60,7 +60,7 @@ namespace GameEngineTest.Builders
             foreach (string key in animations.Keys)
             {
                 Frame[] frames = animations[key];
-                animationsCopy.Add(key, frames.Select(frame => frame.copy()).ToArray());
+                animationsCopy.Add(key, frames.Select(frame => frame.Copy()).ToArray());
             }
             return animationsCopy;
         }

@@ -1,4 +1,5 @@
-﻿using GameEngineTest.Utils;
+﻿using GameEngineTest.Extensions;
+using GameEngineTest.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +17,7 @@ namespace GameEngineTest.Level
             Point tileIndex = map.GetTileIndexByPosition(edgeBoundX, gameObject.GetScaledBounds().GetY1());
             for (int j = -1; j <= numberOfTilesToCheck + 1; j++)
             {
-                MapTile mapTile = map.GetMapTile((int)Math.Round(tileIndex.X), (int)Math.Round(tileIndex.Y + j));
+                MapTile mapTile = map.GetMapTile(tileIndex.X.Round(), tileIndex.Y.Round() + j);
                 if (mapTile != null && HasCollidedWithMapTile(gameObject, mapTile, direction))
                 {
                     if (direction == Direction.RIGHT)
@@ -57,7 +58,7 @@ namespace GameEngineTest.Level
             Point tileIndex = map.GetTileIndexByPosition(gameObject.GetScaledBounds().GetX1(), edgeBoundY);
             for (int j = -1; j <= numberOfTilesToCheck + 1; j++)
             {
-                MapTile mapTile = map.GetMapTile((int)Math.Round(tileIndex.X) + j, (int)Math.Round(tileIndex.Y));
+                MapTile mapTile = map.GetMapTile(tileIndex.X.Round() + j, tileIndex.Y.Round());
                 if (mapTile != null && HasCollidedWithMapTile(gameObject, mapTile, direction))
                 {
                     if (direction == Direction.DOWN)
@@ -102,7 +103,7 @@ namespace GameEngineTest.Level
                     return gameObject.Intersects(mapTile);
                 case TileType.JUMP_THROUGH_PLATFORM:
                     return direction == Direction.DOWN && gameObject.Intersects(mapTile) &&
-                            Math.Round(gameObject.GetScaledBoundsY2() - 1) == Math.Round(mapTile.GetScaledBoundsY1());
+                            gameObject.GetScaledBoundsY2().Round() - 1 == mapTile.GetScaledBoundsY1().Round();
                 default:
                     return false;
             }

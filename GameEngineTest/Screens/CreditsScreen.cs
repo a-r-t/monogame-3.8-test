@@ -1,5 +1,7 @@
 ﻿using GameEngineTest.Engine;
 using GameEngineTest.FontGraphics;
+using GameEngineTest.Level;
+using GameEngineTest.Maps;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,7 +16,7 @@ namespace GameEngineTest.Screens
     public class CreditsScreen : Screen
     {
         protected ScreenCoordinator screenCoordinator;
-        //protected Map background;
+        protected Map background;
         protected KeyLocker keyLocker = new KeyLocker();
         protected SpriteFontGraphic creditsLabel;
         protected SpriteFontGraphic createdByLabel;
@@ -29,8 +31,8 @@ namespace GameEngineTest.Screens
         public override void Initialize()
         {
             // setup graphics on screen (background map, spritefont text)
-            //background = new TitleScreenMap();
-            //background.setAdjustCamera(false);
+            background = new TitleScreenMap();
+            background.SetAdjustCamera(false);
 
             keyLocker.LockKey(Keys.Space);
         }
@@ -65,7 +67,7 @@ namespace GameEngineTest.Screens
 
         public override void Draw(GraphicsHandler graphicsHandler)
         {
-            //background.draw(graphicsHandler);
+            background.Draw(graphicsHandler);
             creditsLabel.Draw(graphicsHandler);
             createdByLabel.Draw(graphicsHandler);
             contributorsLabel.Draw(graphicsHandler);

@@ -49,8 +49,9 @@ namespace GameEngineTest.Engine
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             graphicsHandler = new GraphicsHandler(GraphicsDevice, spriteBatch);
-            screenCoordinator = new ScreenCoordinator();
             screenManager = new ScreenManager();
+            screenManager.Initialize(new Rectangle(0, 0, 800, 605));
+            screenCoordinator = new ScreenCoordinator();
             screenManager.SetCurrentScreen(screenCoordinator);
 
             // TODO: Add your initialization logic here

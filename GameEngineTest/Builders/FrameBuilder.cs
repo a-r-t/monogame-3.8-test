@@ -1,4 +1,5 @@
-﻿using GameEngineTest.GameObject;
+﻿using GameEngineTest.Extensions;
+using GameEngineTest.GameObject;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace GameEngineTest.Builders
 
         public FrameBuilder WithBounds(float x, float y, int width, int height)
         {
-            this.bounds = new Rectangle((int)Math.Round(x), (int)Math.Round(y), width, height);
+            this.bounds = new Rectangle(x.Round(), y.Round(), width, height);
             return this;
         }
 

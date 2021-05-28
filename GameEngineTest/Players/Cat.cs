@@ -15,7 +15,7 @@ namespace GameEngineTest.Players
     public class Cat : Player
     {
         public Cat(float x, float y)
-            : base(new SpriteSheet(Screen.ContentManager.LoadTexture("Cat.png"), 24, 24), x, y, "STAND_RIGHT")
+            : base(new SpriteSheet(Screen.ContentManager.LoadTexture("Images/Cat"), 24, 24), x, y, "STAND_RIGHT")
         {
             gravity = .5f;
             terminalVelocityY = 6f;

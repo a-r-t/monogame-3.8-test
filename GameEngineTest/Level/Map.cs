@@ -1,5 +1,6 @@
 ﻿
 using GameEngineTest.Engine;
+using GameEngineTest.Extensions;
 using GameEngineTest.Utils;
 using System;
 using System.Collections.Generic;
@@ -124,7 +125,10 @@ namespace GameEngineTest.Level
 
             // define array size for map tiles, which is width * height (this is a standard array, NOT a 2D array)
             this.mapTiles = new MapTile[this.height * this.width];
-            int[] tileIndexes = fileInput.ReadToEnd().Split(" ").Select(tileIndexStr => Convert.ToInt32(tileIndexStr)).ToArray();
+            int[] tileIndexes = fileInput.ReadToEnd()
+                .Split(new string[] { " ", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(tileIndexStr => Convert.ToInt32(tileIndexStr))
+                .ToArray();
 
             // read in each tile index from the map file, use the defined tileset to get the associated MapTile to that tileset, and place it in the array
             int currentTileIndex = 0;
@@ -158,7 +162,7 @@ namespace GameEngineTest.Level
         // gets player start position based on player start tile (basically the start tile's position on the map)
         public Point GetPlayerStartPosition()
         {
-            MapTile tile = GetMapTile((int)Math.Round(playerStartTile.X), (int)Math.Round(playerStartTile.Y));
+            MapTile tile = GetMapTile(playerStartTile.X.Round(), playerStartTile.Y.Round());
             return new Point(tile.GetX(), tile.GetY());
         }
 
@@ -242,9 +246,9 @@ namespace GameEngineTest.Level
         public MapTile GetTileByPosition(int xPosition, int yPosition)
         {
             Point tileIndex = GetTileIndexByPosition(xPosition, yPosition);
-            if (IsInBounds((int)Math.Round(tileIndex.X), (int)Math.Round(tileIndex.Y)))
+            if (IsInBounds(tileIndex.X.Round(), tileIndex.Y.Round()))
             {
-                return GetMapTile((int)Math.Round(tileIndex.X), (int)Math.Round(tileIndex.Y));
+                return GetMapTile(tileIndex.X.Round(), tileIndex.Y.Round());
             }
             else
             {
@@ -255,8 +259,8 @@ namespace GameEngineTest.Level
         // returns the index of a tile (x index and y index) based on a position in the map
         public Point GetTileIndexByPosition(float xPosition, float yPosition)
         {
-            int xIndex = (int)(Math.Round(xPosition) / tileset.GetScaledSpriteWidth());
-            int yIndex = (int)(Math.Round(yPosition) / tileset.GetScaledSpriteHeight());
+            int xIndex = xPosition.Round() / tileset.GetScaledSpriteWidth();
+            int yIndex = yPosition.Round() / tileset.GetScaledSpriteHeight();
             return new Point(xIndex, yIndex);
         }
 

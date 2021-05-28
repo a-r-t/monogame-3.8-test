@@ -59,7 +59,7 @@ namespace GameEngineTest.Level
         }
 
         // A subclass can override this method to specify what it does when it touches the player
-        public void TouchedPlayer(Player player)
+        public virtual void TouchedPlayer(Player player)
         {
             player.HurtPlayer(this);
         }

@@ -20,12 +20,12 @@ namespace GameEngineTest.GameObject
 			this.delay = delay;
 		}
 
-		public int getDelay()
+		public int GetDelay()
 		{
 			return delay;
 		}
 
-		public Frame copy()
+		public Frame Copy()
 		{
 			return new Frame(Image, Scale, SpriteEffect, bounds, delay);
 		}

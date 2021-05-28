@@ -1,4 +1,5 @@
 ﻿using GameEngineTest.Engine;
+using GameEngineTest.Extensions;
 using GameEngineTest.GameObject;
 using GameEngineTest.Utils;
 using System;
@@ -43,8 +44,8 @@ namespace GameEngineTest.Level
         // this is used to determine a starting place for the rectangle of area the camera currently contains on the map
         public Point GetTileIndexByCameraPosition()
         {
-            int xIndex = (int)(Math.Round(X) / tileWidth);
-            int yIndex = (int)(Math.Round(Y) / tileHeight);
+            int xIndex = X.Round() / tileWidth;
+            int yIndex = Y.Round() / tileHeight;
             return new Point(xIndex, yIndex);
         }
 

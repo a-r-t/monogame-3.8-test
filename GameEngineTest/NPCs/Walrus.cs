@@ -1,5 +1,6 @@
 ﻿using GameEngineTest.Builders;
 using GameEngineTest.Engine;
+using GameEngineTest.Extensions;
 using GameEngineTest.FontGraphics;
 using GameEngineTest.GameObject;
 using GameEngineTest.Level;
@@ -16,7 +17,7 @@ namespace GameEngineTest.NPCs
     public class Walrus : NPC
     {
         public Walrus(Utils.Point location, Map map)
-            : base(location.X, location.Y, new SpriteSheet(Screen.ContentManager.LoadTexture("Walrus.png"), 24, 24), "TAIL_DOWN", 5000)
+            : base(location.X, location.Y, new SpriteSheet(Screen.ContentManager.LoadTexture("Images/Walrus"), 24, 24), "TAIL_DOWN", 5000)
         {
         }
 
@@ -67,7 +68,7 @@ namespace GameEngineTest.NPCs
         public override void DrawMessage(GraphicsHandler graphicsHandler)
         {
             // draws a box with a border (think like a speech box)
-            graphicsHandler.DrawFilledRectangleWithBorder(new Microsoft.Xna.Framework.Rectangle((int)(Math.Round(GetCalibratedXLocation() - 2)), (int)(Math.Round(GetCalibratedYLocation() - 24)), 40, 25), Color.White, Color.Black, 2);
+            graphicsHandler.DrawFilledRectangleWithBorder(new Microsoft.Xna.Framework.Rectangle(GetCalibratedXLocation().Round() - 2, GetCalibratedYLocation().Round() - 24, 40, 25), Color.White, Color.Black, 2);
 
             // draws message "Hello" in the above speech box
             message.SetLocation(GetCalibratedXLocation() + 2, GetCalibratedYLocation() - 8);

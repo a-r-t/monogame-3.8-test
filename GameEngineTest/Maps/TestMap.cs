@@ -1,6 +1,9 @@
-﻿using GameEngineTest.Engine;
+﻿using GameEngineTest.EnchancedMapTiles;
+using GameEngineTest.Enemies;
+using GameEngineTest.Engine;
 using GameEngineTest.GameObject;
 using GameEngineTest.Level;
+using GameEngineTest.NPCs;
 using GameEngineTest.Tilesets;
 using GameEngineTest.Utils;
 using System;
@@ -29,7 +32,7 @@ namespace GameEngineTest.Maps
             List<EnhancedMapTile> enhancedMapTiles = new List<EnhancedMapTile>();
 
             enhancedMapTiles.Add(new HorizontalMovingPlatform(
-                Screen.ContentManager.LoadTexture("GreenPlatform.png"),
+                Screen.ContentManager.LoadTexture("Images/GreenPlatform"),
                 GetPositionByTileIndex(24, 6),
                 GetPositionByTileIndex(27, 6),
                 TileType.JUMP_THROUGH_PLATFORM,

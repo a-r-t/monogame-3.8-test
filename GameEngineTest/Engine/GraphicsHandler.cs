@@ -1,7 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GameEngineTest.Extensions;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended.BitmapFonts;
 using System;
+using System.Diagnostics;
 
 namespace GameEngineTest.Engine
 {
@@ -91,7 +93,7 @@ namespace GameEngineTest.Engine
             {
                 scale = Vector2.One;
             }
-            position = new Vector2((int)Math.Round(position.X), (int)Math.Round(position.Y));
+            position = new Vector2(position.X.Round(), position.Y.Round());
 
             SpriteBatch.Draw(texture, position, sourceRectangle, (Color)color, rotation, (Vector2)origin, (Vector2)scale, spriteEffects, layerDepth);
         }

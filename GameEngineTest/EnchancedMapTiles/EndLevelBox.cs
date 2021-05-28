@@ -14,7 +14,7 @@ namespace GameEngineTest.EnchancedMapTiles
     public class EndLevelBox : EnhancedMapTile
     {
         public EndLevelBox(Point location)
-            : base(location.X, location.Y, new SpriteSheet(Screen.ContentManager.LoadTexture("GoldBox.png"), 16, 16), "DEFAULT", TileType.PASSABLE)
+            : base(location.X, location.Y, new SpriteSheet(Screen.ContentManager.LoadTexture("Images/GoldBox"), 16, 16), "DEFAULT", TileType.PASSABLE)
         {
         }
 
@@ -46,5 +46,5 @@ namespace GameEngineTest.EnchancedMapTiles
             });
             return animations;
         }
-    };
+    }
 }
