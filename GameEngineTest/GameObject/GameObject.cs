@@ -190,7 +190,7 @@ namespace GameEngineTest.GameObject
 			for (int i = 0; i < amountToMove; i++)
 			{
 				MoveX((int)direction);
-				float newLocation = MapTileCollisionHandler.getAdjustedPositionAfterCollisionCheckX(this, map, direction);
+				float newLocation = MapTileCollisionHandler.GetAdjustedPositionAfterCollisionCheckX(this, map, direction);
 				if (newLocation != 0)
 				{
 					hasCollided = true;
@@ -207,7 +207,7 @@ namespace GameEngineTest.GameObject
 			if (!hasCollided)
 			{
 				MoveX(moveAmountXRemainder * (int)direction);
-				float newLocation = MapTileCollisionHandler.getAdjustedPositionAfterCollisionCheckX(this, map, direction);
+				float newLocation = MapTileCollisionHandler.GetAdjustedPositionAfterCollisionCheckX(this, map, direction);
 				if (newLocation != 0)
 				{
 					hasCollided = true;
@@ -242,7 +242,7 @@ namespace GameEngineTest.GameObject
 			for (int i = 0; i < amountToMove; i++)
 			{
 				MoveY((int)direction);
-				float newLocation = MapTileCollisionHandler.getAdjustedPositionAfterCollisionCheckY(this, map, direction);
+				float newLocation = MapTileCollisionHandler.GetAdjustedPositionAfterCollisionCheckY(this, map, direction);
 				if (newLocation != 0)
 				{
 					hasCollided = true;
@@ -259,7 +259,7 @@ namespace GameEngineTest.GameObject
 			if (!hasCollided)
 			{
 				MoveY(moveAmountYRemainder * (int)direction);
-				float newLocation = MapTileCollisionHandler.getAdjustedPositionAfterCollisionCheckY(this, map, direction);
+				float newLocation = MapTileCollisionHandler.GetAdjustedPositionAfterCollisionCheckY(this, map, direction);
 				if (newLocation != 0)
 				{
 					hasCollided = true;
@@ -285,7 +285,7 @@ namespace GameEngineTest.GameObject
 		{
 			if (map != null)
 			{
-				return x - map.GetCamera().getX();
+				return x - map.GetCamera().X;
 			}
 			else
 			{
@@ -298,7 +298,7 @@ namespace GameEngineTest.GameObject
 		{
 			if (map != null)
 			{
-				return y - map.GetCamera().getY();
+				return y - map.GetCamera().Y;
 			}
 			else
 			{
@@ -313,8 +313,8 @@ namespace GameEngineTest.GameObject
 			{
 				Rectangle scaledBounds = GetScaledBounds();
 				return new Rectangle(
-						scaledBounds.GetX1() - map.GetCamera().getX(),
-						scaledBounds.GetY1() - map.GetCamera().getY(),
+						scaledBounds.GetX1() - map.GetCamera().X,
+						scaledBounds.GetY1() - map.GetCamera().Y,
 						scaledBounds.GetScaledWidth(),
 						scaledBounds.GetScaledHeight()
 				);

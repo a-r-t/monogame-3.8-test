@@ -39,6 +39,12 @@ namespace GameEngineTest.GameObject
             return new Rectangle(GetBoundsX1(), GetBoundsY1(), bounds.Width, bounds.Height, Scale);
         }
 
+        public Rectangle GetBounds()
+        {
+            return new Rectangle(GetBoundsX1(), GetBoundsY1(), bounds.Width, bounds.Height, Scale);
+        }
+
+
         public float GetBoundsX1()
         {
             return X + bounds.GetX1();

@@ -24,16 +24,16 @@ namespace GameEngineTest.Level
         public Tileset(Texture2D image, int tileWidth, int tileHeight)
             : base(image, tileWidth, tileHeight)
         {
-            this.tiles = mapDefinedTilesToIndex();
-            this.defaultTile = getDefaultTile();
+            this.tiles = MapDefinedTilesToIndex();
+            this.defaultTile = GetDefaultTile();
         }
 
         public Tileset(Texture2D image, int tileWidth, int tileHeight, int tileScale)
             : base(image, tileWidth, tileHeight)
         {
             this.tileScale = tileScale;
-            this.tiles = mapDefinedTilesToIndex();
-            this.defaultTile = getDefaultTile();
+            this.tiles = MapDefinedTilesToIndex();
+            this.defaultTile = GetDefaultTile();
         }
 
         // a subclass of this class must implement this method to define tiles in the tileset

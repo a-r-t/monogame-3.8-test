@@ -51,7 +51,7 @@ namespace GameEngineTest.Level
         }
 
 
-        public override void Update(Player player)
+        public void Update(Player player)
         {
             base.Update();
         }

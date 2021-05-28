@@ -126,8 +126,8 @@ namespace GameEngineTest.GameObject
 		protected void UpdateCurrentFrame()
 		{
 			currentFrame = GetCurrentFrame();
-			currentFrame.SetX(x);
-			currentFrame.SetY(y);
+			currentFrame.X = x;
+			currentFrame.Y = y;
 		}
 
 		// gets the frame from current animation that the animated sprite class is currently using
@@ -152,8 +152,8 @@ namespace GameEngineTest.GameObject
 			currentFrame.DrawBounds(graphicsHandler, color);
 		}
 
-		public float GetX() { return currentFrame.GetX(); }
-		public float GetY() { return currentFrame.GetY(); }
+		public float GetX() { return currentFrame.X; }
+		public float GetY() { return currentFrame.Y; }
 		public float GetX1() { return currentFrame.GetX1(); }
 		public float GetY1() { return currentFrame.GetY1(); }
 		public float GetX2() { return currentFrame.GetX2(); }
@@ -164,13 +164,13 @@ namespace GameEngineTest.GameObject
 		public void SetX(float x)
 		{
 			this.x = x;
-			currentFrame.SetX(x);
+			currentFrame.X = x;
 		}
 
 		public void SetY(float y)
 		{
 			this.y = y;
-			currentFrame.SetY(y);
+			currentFrame.Y = y;
 		}
 
 		public void SetLocation(float x, float y)
@@ -217,29 +217,29 @@ namespace GameEngineTest.GameObject
 
 		public float GetScale()
 		{
-			return currentFrame.GetScale();
+			return currentFrame.Scale;
 		}
 
 		public void SetScale(float scale)
 		{
-			currentFrame.SetScale(scale);
+			currentFrame.Scale = scale;
 		}
 
 		public int GetWidth()
 		{
-			return currentFrame.GetWidth();
+			return currentFrame.Width;
 		}
 		public int GetHeight()
 		{
-			return currentFrame.GetHeight();
+			return currentFrame.Height;
 		}
 		public void SetWidth(int width)
 		{
-			currentFrame.SetWidth(width);
+			currentFrame.Width = width;
 		}
 		public void SetHeight(int height)
 		{
-			currentFrame.SetHeight(height);
+			currentFrame.Height = height;
 		}
 		public int GetScaledWidth()
 		{

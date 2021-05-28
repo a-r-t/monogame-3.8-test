@@ -1,5 +1,6 @@
 ﻿using GameEngineTest.Engine;
 using GameEngineTest.FontGraphics;
+using GameEngineTest.Level;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -32,7 +33,7 @@ namespace GameEngineTest.Screens
         public override void Initialize()
         {
             background = new TitleScreenMap();
-            background.setAdjustCamera(false);
+            background.SetAdjustCamera(false);
             keyTimer.SetWaitTime(200);
             menuItemSelected = -1;
             keyLocker.LockKey(Keys.Space);
@@ -50,7 +51,7 @@ namespace GameEngineTest.Screens
             keyTimer.Tick(gameTime.ElapsedGameTime.TotalMilliseconds);
 
             // update background map (to play tile animations)
-            background.update(null);
+            background.Update(null);
 
             KeyboardState keyboardState = Keyboard.GetState();
 

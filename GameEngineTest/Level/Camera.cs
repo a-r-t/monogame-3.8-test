@@ -48,7 +48,7 @@ namespace GameEngineTest.Level
             return new Point(xIndex, yIndex);
         }
 
-        public override void Update(Player player)
+        public void Update(Player player)
         {
             UpdateMapTiles();
             UpdateMapEntities(player);

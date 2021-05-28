@@ -1,4 +1,5 @@
 ﻿using GameEngineTest.Engine;
+using GameEngineTest.Level;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework;
 using System;
@@ -7,7 +8,7 @@ using System.Text;
 
 namespace GameEngineTest.Screens
 {
-    public class PlayLevelScreen : Screen
+    public class PlayLevelScreen : Screen, PlayerListener
     {
         protected ScreenCoordinator screenCoordinator;
         protected Map map;
@@ -28,13 +29,13 @@ namespace GameEngineTest.Screens
 
             
             this.map = new TestMap();
-            map.reset();
+            map.Reset();
 
             // setup player
-            this.player = new Cat(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y);
-            this.player.setMap(map);
-            this.player.addListener(this);
-            this.player.setLocation(map.getPlayerStartPosition().x, map.getPlayerStartPosition().y);
+            this.player = new Cat(map.GetPlayerStartPosition().X, map.GetPlayerStartPosition().Y);
+            this.player.SetMap(map);
+            this.player.AddListener(this);
+            this.player.SetLocation(map.GetPlayerStartPosition().X, map.GetPlayerStartPosition().Y);
             this.playLevelScreenState = PlayLevelScreenState.RUNNING;        
         }
 
@@ -45,8 +46,8 @@ namespace GameEngineTest.Screens
             {
                 // if level is "running" update player and map to keep game logic for the platformer level going
                 case PlayLevelScreenState.RUNNING:
-                    player.update();
-                    map.update(player);
+                    player.Update();
+                    map.Update(player);
                     break;
                 // if level has been completed, bring up level cleared screen
                 case PlayLevelScreenState.LEVEL_COMPLETED:
@@ -84,8 +85,8 @@ namespace GameEngineTest.Screens
                 case PlayLevelScreenState.RUNNING:
                 case PlayLevelScreenState.LEVEL_COMPLETED:
                 case PlayLevelScreenState.PLAYER_DEAD:
-                    map.draw(graphicsHandler);
-                    player.draw(graphicsHandler);
+                    map.Draw(graphicsHandler);
+                    player.Draw(graphicsHandler);
                     break;
                 case PlayLevelScreenState.LEVEL_WIN_MESSAGE:
                     levelClearedScreen.draw(graphicsHandler);

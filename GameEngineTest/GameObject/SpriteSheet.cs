@@ -28,7 +28,7 @@ namespace GameEngineTest.GameObject
         // returns a subimage from the sprite sheet image based on the row and column
         public Texture2D GetSprite(int spriteNumber, int animationNumber)
         {
-            return Image.Crop(new Rectangle((animationNumber * SpriteWidth) + animationNumber, (spriteNumber * SpriteHeight) + spriteNumber, SpriteWidth, SpriteHeight));
+            return Image.Crop(new Microsoft.Xna.Framework.Rectangle((animationNumber * SpriteWidth) + animationNumber, (spriteNumber * SpriteHeight) + spriteNumber, SpriteWidth, SpriteHeight));
             //return Image.GetSubimage((animationNumber * SpriteWidth) + animationNumber, (spriteNumber * SpriteHeight) + spriteNumber, SpriteWidth, SpriteHeight);
         }
 
@@ -36,7 +36,7 @@ namespace GameEngineTest.GameObject
         // this does the same as "getSprite", I added two methods that do the same thing for some reason
         public Texture2D GetSubImage(int row, int column)
         {
-            return Image.Crop(new Rectangle((column * SpriteWidth) + column, (row * SpriteHeight) + row, SpriteWidth, SpriteHeight));
+            return Image.Crop(new Microsoft.Xna.Framework.Rectangle((column * SpriteWidth) + column, (row * SpriteHeight) + row, SpriteWidth, SpriteHeight));
             //return image.getSubimage((column * spriteWidth) + column, (row * spriteHeight) + row, spriteWidth, spriteHeight);
         }
 

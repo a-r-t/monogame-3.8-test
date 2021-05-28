@@ -71,7 +71,7 @@ namespace GameEngineTest.Level
             return null;
         }
 
-        public override void Update(Player player)
+        public void Update(Player player)
         {
             base.Update();
             CheckTalkedTo(player);

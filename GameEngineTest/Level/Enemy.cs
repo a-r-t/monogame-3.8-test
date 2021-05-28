@@ -49,7 +49,7 @@ namespace GameEngineTest.Level
             base.Initialize();
         }
 
-        public override void Update(Player player)
+        public void Update(Player player)
         {
             base.Update();
             if (Intersects(player))

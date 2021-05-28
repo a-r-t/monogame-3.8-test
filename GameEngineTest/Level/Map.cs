@@ -98,7 +98,7 @@ namespace GameEngineTest.Level
                 // open map file that is located in the MAP_FILES_PATH directory
                 fileInput = new StreamReader(Config.MAP_FILES_PATH + this.mapFileName);
             }
-            catch (FileNotFoundException ex)
+            catch (FileNotFoundException)
             {
                 // if map file does not exist, create a new one for this map (the map editor uses this)
                 Debug.WriteLine("Map file " + Config.MAP_FILES_PATH + this.mapFileName + " not found! Creating empty map file...");
@@ -254,8 +254,8 @@ namespace GameEngineTest.Level
         // returns the index of a tile (x index and y index) based on a position in the map
         public Point GetTileIndexByPosition(float xPosition, float yPosition)
         {
-            int xIndex = Math.Round(xPosition) / tileset.GetScaledSpriteWidth();
-            int yIndex = Math.Round(yPosition) / tileset.GetScaledSpriteHeight();
+            int xIndex = (int)(Math.Round(xPosition) / tileset.GetScaledSpriteWidth());
+            int yIndex = (int)(Math.Round(yPosition) / tileset.GetScaledSpriteHeight());
             return new Point(xIndex, yIndex);
         }
 
