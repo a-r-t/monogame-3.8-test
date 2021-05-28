@@ -103,3 +103,8 @@
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /build:SpriteFonts/ComicSans20.spritefont
+
+#begin SpriteFonts/Arial12.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:SpriteFonts/Arial12.spritefont

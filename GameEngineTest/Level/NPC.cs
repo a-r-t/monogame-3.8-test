@@ -1,4 +1,5 @@
 ﻿using GameEngineTest.Engine;
+using GameEngineTest.FontGraphics;
 using GameEngineTest.GameObject;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,7 +14,7 @@ namespace GameEngineTest.Level
     public class NPC : MapEntity
     {
         protected bool talkedTo = false;
-        protected SpriteFont message;
+        protected SpriteFontGraphic message;
         protected int talkedToTime;
         protected Stopwatch timer = new Stopwatch();
 
@@ -66,12 +67,12 @@ namespace GameEngineTest.Level
             this.talkedToTime = talkedToTime;
         }
 
-        protected SpriteFont CreateMessage()
+        protected virtual SpriteFontGraphic CreateMessage()
         {
             return null;
         }
 
-        public void Update(Player player)
+        public virtual void Update(Player player)
         {
             base.Update();
             CheckTalkedTo(player);
@@ -101,6 +102,6 @@ namespace GameEngineTest.Level
         }
 
         // A subclass can override this method to specify what message it displays upon being talked to
-        public void DrawMessage(GraphicsHandler graphicsHandler) { }
+        public virtual void DrawMessage(GraphicsHandler graphicsHandler) { }
     }
 }

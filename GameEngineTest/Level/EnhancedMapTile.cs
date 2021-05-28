@@ -51,7 +51,7 @@ namespace GameEngineTest.Level
         }
 
 
-        public void Update(Player player)
+        public virtual void Update(Player player)
         {
             base.Update();
         }

@@ -19,6 +19,11 @@ namespace GameEngineTest.FontGraphics
             Color = color;
         }
 
+        public void SetLocation(float dx, float dy)
+        {
+            Position = new Vector2(dx, dy);
+        }
+
         public void MoveX(float dx)
         {
             Position += new Vector2(dx, 0);

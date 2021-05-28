@@ -274,19 +274,19 @@ namespace GameEngineTest.Level
         }
 
         // list of enemies defined to be a part of the map, should be overridden in a subclass
-        protected List<Enemy> LoadEnemies()
+        public virtual List<Enemy> LoadEnemies()
         {
             return new List<Enemy>();
         }
 
         // list of enhanced map tiles defined to be a part of the map, should be overridden in a subclass
-        protected List<EnhancedMapTile> LoadEnhancedMapTiles()
+        public virtual List<EnhancedMapTile> LoadEnhancedMapTiles()
         {
             return new List<EnhancedMapTile>();
         }
 
         // list of npcs defined to be a part of the map, should be overridden in a subclass
-        protected List<NPC> LoadNPCs()
+        public virtual List<NPC> LoadNPCs()
         {
             return new List<NPC>();
         }

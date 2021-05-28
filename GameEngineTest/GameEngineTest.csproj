@@ -31,5 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\BitmapFonts\" />
+    <Folder Include="Enemies\" />
+    <Folder Include="EnchancedMapTiles\" />
   </ItemGroup>
 </Project>
