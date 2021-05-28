@@ -32,6 +32,13 @@
   <ItemGroup>
     <Folder Include="Content\BitmapFonts\" />
     <Folder Include="Enemies\" />
-    <Folder Include="EnchancedMapTiles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="MapFiles\test_map.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="MapFiles\title_screen_map.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
