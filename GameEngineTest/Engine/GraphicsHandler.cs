@@ -75,7 +75,7 @@ namespace GameEngineTest.Engine
             SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Width + borderThickness, borderThickness), (Color)borderColor);
         }
 
-        public void DrawImage(Texture2D texture, Vector2 position, Rectangle? sourceRectangle = null, Color? color = null, float rotation = 0.0f, Vector2? origin = null, Vector2? scale = null, SpriteEffects spriteEffects = SpriteEffects.None, float layerDepth = 1f)
+        public void DrawImage(Texture2D texture, Vector2 position, Rectangle? sourceRectangle = null, Color? color = null, float rotation = 0.0f, Vector2? origin = null, Vector2? scale = null, SpriteEffects spriteEffects = SpriteEffects.None, float layerDepth = 0f)
         {
             if (sourceRectangle == null)
             {
@@ -98,7 +98,7 @@ namespace GameEngineTest.Engine
             SpriteBatch.Draw(texture, position, sourceRectangle, (Color)color, rotation, (Vector2)origin, (Vector2)scale, spriteEffects, layerDepth);
         }
 
-        public void DrawString(SpriteFont spriteFont, string text, Vector2 position, Color? color = null, float rotation = 0.0f, Vector2? origin = null, Vector2? scale = null, SpriteEffects spriteEffects = SpriteEffects.None, float layerDepth = 1f)
+        public void DrawString(SpriteFont spriteFont, string text, Vector2 position, Color? color = null, float rotation = 0.0f, Vector2? origin = null, Vector2? scale = null, SpriteEffects spriteEffects = SpriteEffects.None, float layerDepth = 0f)
         {
             if (color == null)
             {
@@ -116,7 +116,7 @@ namespace GameEngineTest.Engine
             SpriteBatch.DrawString(spriteFont, text, position, (Color)color, rotation, (Vector2)origin, (Vector2)scale, spriteEffects, layerDepth);
         }
 
-        public void DrawString(BitmapFont bitmapFont, string text, Vector2 position, Color? color = null, float rotation = 0.0f, Vector2? origin = null, Vector2? scale = null, SpriteEffects spriteEffects = SpriteEffects.None, float layerDepth = 1f)
+        public void DrawString(BitmapFont bitmapFont, string text, Vector2 position, Color? color = null, float rotation = 0.0f, Vector2? origin = null, Vector2? scale = null, SpriteEffects spriteEffects = SpriteEffects.None, float layerDepth = 0f)
         {
             if (color == null)
             {
@@ -135,7 +135,7 @@ namespace GameEngineTest.Engine
         }
 
         // TODO: This doesn't really work
-        public void DrawStringWithOutline(SpriteFont spriteFont, string text, Vector2 position, Color? color = null, Color? outlineColor = null, int outlineThickness = 1, float rotation = 0.0f, Vector2? origin = null, Vector2? scale = null, SpriteEffects spriteEffects = SpriteEffects.None, float layerDepth = 1f)
+        public void DrawStringWithOutline(SpriteFont spriteFont, string text, Vector2 position, Color? color = null, Color? outlineColor = null, int outlineThickness = 1, float rotation = 0.0f, Vector2? origin = null, Vector2? scale = null, SpriteEffects spriteEffects = SpriteEffects.None, float layerDepth = 0f)
         {
             if (color == null)
             {
