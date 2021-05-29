@@ -287,7 +287,7 @@ namespace GameEngineTest.GameObject
 		{
 			if (map != null)
 			{
-				return x - map.GetCamera().X;
+				return x.Round() - map.GetCamera().X.Round();
 			}
 			else
 			{
@@ -300,7 +300,7 @@ namespace GameEngineTest.GameObject
 		{
 			if (map != null)
 			{
-				return y - map.GetCamera().Y;
+				return y.Round() - map.GetCamera().Y.Round();
 			}
 			else
 			{
@@ -315,8 +315,8 @@ namespace GameEngineTest.GameObject
 			{
 				Rectangle scaledBounds = GetScaledBounds();
 				return new Rectangle(
-					scaledBounds.GetX1() - map.GetCamera().X,
-					scaledBounds.GetY1() - map.GetCamera().Y,
+					scaledBounds.GetX1().Round() - map.GetCamera().X.Round(),
+					scaledBounds.GetY1().Round() - map.GetCamera().Y.Round(),
 					scaledBounds.GetScaledWidth(),
 					scaledBounds.GetScaledHeight()
 				);

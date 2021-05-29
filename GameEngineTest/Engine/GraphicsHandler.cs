@@ -94,7 +94,7 @@ namespace GameEngineTest.Engine
                 scale = Vector2.One;
             }
             position = new Vector2(position.X.Round(), position.Y.Round());
-
+            
             SpriteBatch.Draw(texture, position, sourceRectangle, (Color)color, rotation, (Vector2)origin, (Vector2)scale, spriteEffects, layerDepth);
         }
 

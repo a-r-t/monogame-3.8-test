@@ -24,6 +24,7 @@ namespace GameEngineTest.Engine
         public static GameServiceContainer GameServiceContainer { get; private set; }
         public static int ViewportWidth { get; private set; }
         public static int ViewportHeight { get; private set; }
+        RenderTarget2D renderTarget;
 
         public GameLoop()
         {
@@ -54,6 +55,14 @@ namespace GameEngineTest.Engine
             screenCoordinator = new ScreenCoordinator();
             screenManager.SetCurrentScreen(screenCoordinator);
 
+            renderTarget = new RenderTarget2D(
+                GraphicsDevice,
+                GraphicsDevice.PresentationParameters.BackBufferWidth,
+                GraphicsDevice.PresentationParameters.BackBufferHeight,
+                false,
+                GraphicsDevice.PresentationParameters.BackBufferFormat,
+                DepthFormat.Depth24);
+
             // TODO: Add your initialization logic here
             base.Initialize();
         }
@@ -78,34 +87,35 @@ namespace GameEngineTest.Engine
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Draws the entire scene in the given render target.
+        /// </summary>
+        /// <returns>A texture2D with the scene drawn in it.</returns>
+        protected void DrawSceneToTexture(RenderTarget2D renderTarget)
+        {
+            // Set the render target
+            GraphicsDevice.SetRenderTarget(renderTarget);
+
+            GraphicsDevice.DepthStencilState = new DepthStencilState() { DepthBufferEnable = true };
+
+            // Draw the scene
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullCounterClockwise);
+
+            screenManager.Draw(graphicsHandler);
+            spriteBatch.End();
+            // Drop the render target
+            GraphicsDevice.SetRenderTarget(null);
+        }
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            DrawSceneToTexture(renderTarget);
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullCounterClockwise);
-            /*
-                        graphicsHandler.DrawFilledRectangle(new Rectangle(0, 0, 10, 10), Color.Black);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
 
-                        graphicsHandler.DrawFilledRectangleWithBorder(new Rectangle(80, 80, 60, 60), Color.Black, Color.White, 6);
-
-                        graphicsHandler.DrawRectangle(new Rectangle(200, 200, 20, 80), Color.Blue, 1);
-
-                        graphicsHandler.DrawImage(cat, new Vector2(200, 200), sourceRectangle: new Rectangle(0, 0, 23, 23), color: Color.White, scale: new Vector2(3f, 3f));
-
-                        graphicsHandler.DrawString(font, "Cat", new Vector2(300, 300), Color.Black);
-
-                        graphicsHandler.DrawString(font, "Cat", new Vector2(301, 299), Color.Black);
-
-                        graphicsHandler.DrawString(font, "Cat", new Vector2(302, 298), Color.Black);
-
-                        graphicsHandler.DrawString(font, "Cat", new Vector2(303, 297), Color.Green);
-
-                        graphicsHandler.DrawImage(cat, new Vector2(500, 200), sourceRectangle: new Rectangle(0, 0, 23, 23), color: Color.White, scale: new Vector2(3f, 3f));
-
-                        spriteBatch.DrawString(testFont, "TEST", new Vector2(500, 100), Color.Green);*/
-
-            screenManager.Draw(graphicsHandler);
-
+            spriteBatch.Draw(renderTarget, new Rectangle(0, 0, 800, 605), Color.White);
 
             spriteBatch.End();
 
@@ -113,3 +123,24 @@ namespace GameEngineTest.Engine
         }
     }
 }
+
+/*
+            graphicsHandler.DrawFilledRectangle(new Rectangle(0, 0, 10, 10), Color.Black);
+
+            graphicsHandler.DrawFilledRectangleWithBorder(new Rectangle(80, 80, 60, 60), Color.Black, Color.White, 6);
+
+            graphicsHandler.DrawRectangle(new Rectangle(200, 200, 20, 80), Color.Blue, 1);
+
+            graphicsHandler.DrawImage(cat, new Vector2(200, 200), sourceRectangle: new Rectangle(0, 0, 23, 23), color: Color.White, scale: new Vector2(3f, 3f));
+
+            graphicsHandler.DrawString(font, "Cat", new Vector2(300, 300), Color.Black);
+
+            graphicsHandler.DrawString(font, "Cat", new Vector2(301, 299), Color.Black);
+
+            graphicsHandler.DrawString(font, "Cat", new Vector2(302, 298), Color.Black);
+
+            graphicsHandler.DrawString(font, "Cat", new Vector2(303, 297), Color.Green);
+
+            graphicsHandler.DrawImage(cat, new Vector2(500, 200), sourceRectangle: new Rectangle(0, 0, 23, 23), color: Color.White, scale: new Vector2(3f, 3f));
+
+            spriteBatch.DrawString(testFont, "TEST", new Vector2(500, 100), Color.Green);*/

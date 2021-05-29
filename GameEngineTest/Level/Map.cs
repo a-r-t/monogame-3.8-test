@@ -49,7 +49,7 @@ namespace GameEngineTest.Level
         // if set to false, camera will not move as player moves
         protected bool adjustCamera = true;
 
-        public Map(String mapFileName, Tileset tileset, Point playerStartTile)
+        public Map(string mapFileName, Tileset tileset, Point playerStartTile)
         {
             this.mapFileName = mapFileName;
             this.tileset = tileset;
@@ -58,8 +58,8 @@ namespace GameEngineTest.Level
             this.startBoundY = 0;
             this.endBoundX = width * tileset.GetScaledSpriteWidth();
             this.endBoundY = height * tileset.GetScaledSpriteHeight();
-            this.xMidPoint = GameLoop.ViewportWidth / 2;
-            this.yMidPoint = GameLoop.ViewportHeight / 2;
+            this.xMidPoint = ScreenManager.GetScreenWidth() / 2;
+            this.yMidPoint = ScreenManager.GetScreenHeight() / 2;
             this.playerStartTile = playerStartTile;
         }
 
@@ -153,8 +153,7 @@ namespace GameEngineTest.Level
         // defaults the map dimensions to 0x0
         private void CreateEmptyMapFile() //throws IOException
         {
-            StreamWriter fileWriter = null;
-            fileWriter = new StreamWriter(Config.MAP_FILES_PATH + this.mapFileName);
+            StreamWriter fileWriter = new StreamWriter(Config.MAP_FILES_PATH + this.mapFileName);
             fileWriter.Write("0 0\n");
             fileWriter.Close();
         }
@@ -213,7 +212,7 @@ namespace GameEngineTest.Level
             return height * tileset.GetScaledSpriteHeight();
         }
 
-        public MapTile[] getMapTiles()
+        public MapTile[] GetMapTiles()
         {
             return mapTiles;
         }

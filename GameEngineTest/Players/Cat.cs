@@ -21,7 +21,7 @@ namespace GameEngineTest.Players
             terminalVelocityY = 6f;
             jumpHeight = 14.5f;
             jumpDegrade = .5f;
-            walkSpeed = 2.1f;
+            walkSpeed = 3.1f;
             momentumYIncrease = .5f;
             JUMP_KEY = Keys.Up;
             MOVE_LEFT_KEY = Keys.Left;

@@ -4,6 +4,7 @@ using GameEngineTest.GameObject;
 using GameEngineTest.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 // This class represents a Map's "Camera", aka a piece of the map that is currently included in a level's update/draw logic based on what should be shown on screen.
@@ -234,9 +235,9 @@ namespace GameEngineTest.Level
         public void DrawMapTiles(GraphicsHandler graphicsHandler)
         {
             Point tileIndex = GetTileIndexByCameraPosition();
-            for (int i = (int)tileIndex.Y - 1; i <= tileIndex.Y + Height + 1; i++)
+            for (int i = tileIndex.Y.Round() - 1; i <= tileIndex.Y + Height + 1; i++)
             {
-                for (int j = (int)tileIndex.X - 1; j <= tileIndex.X + Width + 1; j++)
+                for (int j = tileIndex.X.Round() - 1; j <= tileIndex.X + Width + 1; j++)
                 {
                     MapTile tile = map.GetMapTile(j, i);
                     if (tile != null)
