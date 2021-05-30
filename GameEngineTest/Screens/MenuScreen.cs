@@ -35,6 +35,7 @@ namespace GameEngineTest.Screens
         {
             background = new TitleScreenMap();
             background.SetAdjustCamera(false);
+            background.SetCameraLocation(Direction.LEFT, Direction.DOWN);
             keyTimer.SetWaitTime(200);
             menuItemSelected = -1;
             keyLocker.LockKey(Keys.Space);

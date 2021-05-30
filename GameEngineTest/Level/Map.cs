@@ -430,6 +430,33 @@ namespace GameEngineTest.Level
             }
         }
 
+        public void SetCameraLocation(int x, int y)
+        {
+            camera.X = x;
+            camera.Y = y;
+        }
+
+        public void SetCameraLocation(Direction xDirection, Direction yDirection)
+        {
+            if (xDirection == Direction.LEFT)
+            {
+                camera.X = 0;
+            }
+            else if (xDirection == Direction.RIGHT)
+            {
+                camera.X = endBoundX - ScreenManager.GetScreenWidth();
+            }
+
+            if (yDirection == Direction.UP)
+            {
+                camera.Y = 0;
+            }
+            else if (yDirection == Direction.DOWN)
+            {
+                camera.Y = endBoundY - ScreenManager.GetScreenHeight();
+            }
+        }
+
         public void Reset()
         {
             SetupMap();
