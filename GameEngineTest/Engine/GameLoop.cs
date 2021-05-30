@@ -30,8 +30,11 @@ namespace GameEngineTest.Engine
         {
             graphics = new GraphicsDeviceManager(this);
             GraphicsDeviceManager = graphics;
-            graphics.PreferMultiSampling = true;
-            graphics.SynchronizeWithVerticalRetrace = false;
+            
+            // holding on to these just in case but they make the game choppy
+            //graphics.PreferMultiSampling = true;
+            //graphics.SynchronizeWithVerticalRetrace = false;
+
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
             IsFixedTimeStep = true;
