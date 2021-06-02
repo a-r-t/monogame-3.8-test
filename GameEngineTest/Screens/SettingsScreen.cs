@@ -29,7 +29,7 @@ namespace GameEngineTest.Screens
         public override void Initialize()
         {
             textBoxFont = ContentManager.LoadSpriteFont("SpriteFonts/Roboto20");
-            textBox = new TextBox(10, 10, 80, textBoxFont, defaultText: "", characterLimit: 0);
+            textBox = new TextBox(10, 10, 80, textBoxFont, defaultText: "", characterLimit: -1);
         }
 
         public override void LoadContent()

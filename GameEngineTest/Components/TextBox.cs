@@ -27,6 +27,7 @@ namespace GameEngineTest.Components
         private Stopwatch cursorChangeTimer;
         private KeyLocker keyLocker = new KeyLocker();
         public int CharacterLimit { get; set; }
+        private int scrollOffset;
 
         public Microsoft.Xna.Framework.Rectangle Bounds
         {
@@ -36,7 +37,7 @@ namespace GameEngineTest.Components
             }
         }
 
-        public TextBox(int x, int y, int width, SpriteFont spriteFont, string defaultText = "", int characterLimit = 0)
+        public TextBox(int x, int y, int width, SpriteFont spriteFont, string defaultText = "", int characterLimit = -1)
         {
             box = new Rectangle(x, y, width, spriteFont.LineSpacing);
             box.Color = Color.White;
@@ -66,13 +67,21 @@ namespace GameEngineTest.Components
         {
             MouseState mouseState = Mouse.GetState();
             Vector2 mouseLocation = new Vector2(mouseState.X, mouseState.Y);
-            if (mouseState.LeftButton == ButtonState.Pressed && box.ContainsPoint(mouseLocation))
+            if (mouseState.LeftButton == ButtonState.Pressed && box.ContainsPoint(mouseLocation) && cursorChangeTimer.IsTimeUp())
             {
-                float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2)) / spacingBetweenLetters;
+                float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + (scrollOffset * spacingBetweenLetters)) / spacingBetweenLetters;
 
-                cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
-                cursorBlinkTimer.Reset();
-                showCursor = true;
+                int calculatedCursorIndex = Math.Min(mouseLocationOffset.Round(), Text.Length);
+
+                if (box.X + box.BorderThickness + 2 + (calculatedCursorIndex * spacingBetweenLetters) - (scrollOffset * spacingBetweenLetters) <= box.X + box.Width - box.BorderThickness - 2)
+                { 
+                    cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
+                    cursorBlinkTimer.Reset();
+                    showCursor = true;
+
+                    cursorChangeTimer.SetWaitTime(100);
+                }
+                
             }
 
             KeyboardState keyboardState = Keyboard.GetState();
@@ -107,6 +116,16 @@ namespace GameEngineTest.Components
                 keyLocker.UnlockKey(Keys.Left);
                 keyLocker.UnlockKey(Keys.Right);
             }
+
+            // if cursor position is off screen
+            if (box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters) - (scrollOffset * spacingBetweenLetters) > box.X + box.Width - box.BorderThickness - 2)
+            {
+                scrollOffset++;
+            }
+            else if (box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters) - (scrollOffset * spacingBetweenLetters) < box.X + box.BorderThickness + 2)
+            {
+                scrollOffset--;
+            }
         }
 
         public virtual void Draw(GraphicsHandler graphicsHandler)
@@ -114,11 +133,11 @@ namespace GameEngineTest.Components
             box.Draw(graphicsHandler);
 
             graphicsHandler.SetScissorRectangle(Bounds);
-            graphicsHandler.DrawString(font, Text, new Vector2(box.X + box.BorderThickness + 2, box.Y), color: Color.Black);
+            graphicsHandler.DrawString(font, Text, new Vector2(box.X + box.BorderThickness + 2 - (scrollOffset * spacingBetweenLetters), box.Y), color: Color.Black);
 
             if (showCursor)
             {
-                graphicsHandler.DrawLine(new Vector2(box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters), box.Y + box.BorderThickness + 2), new Vector2(box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters), box.Y + box.Height - box.BorderThickness - 2), Color.Black);
+                graphicsHandler.DrawLine(new Vector2(box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters) - (scrollOffset * spacingBetweenLetters), box.Y + box.BorderThickness + 2), new Vector2(box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters) - (scrollOffset * spacingBetweenLetters), box.Y + box.Height - box.BorderThickness - 2), Color.Black);
             }
 
             graphicsHandler.RemoveScissorRectangle();
@@ -145,7 +164,7 @@ namespace GameEngineTest.Components
                     showCursor = true;
                 }
             }
-            else if (Text.Length < CharacterLimit)
+            else if (CharacterLimit < 0 || Text.Length < CharacterLimit)
             {
                 if (cursorPosition == Text.Length)
                 {
