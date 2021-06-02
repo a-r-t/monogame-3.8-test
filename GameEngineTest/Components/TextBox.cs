@@ -24,6 +24,9 @@ namespace GameEngineTest.Components
         private Stopwatch cursorBlinkTimer;
         private bool showCursor = true;
         private int spacingBetweenLetters;
+        private Stopwatch cursorChangeTimer;
+        private KeyLocker keyLocker = new KeyLocker();
+
         public Microsoft.Xna.Framework.Rectangle Bounds
         {
             get
@@ -40,9 +43,14 @@ namespace GameEngineTest.Components
             box.BorderThickness = 2;
             Text = defaultText;
             font = spriteFont;
+            
             cursorBlinkTimer = new Stopwatch();
             cursorBlinkTimer.SetWaitTime(500);
+
+            cursorChangeTimer = new Stopwatch();
+
             spacingBetweenLetters = (int)spriteFont.MeasureString("a").X;
+
             GameLoop.GameWindow.TextInput += Window_TextInput;
         }
 
@@ -64,11 +72,38 @@ namespace GameEngineTest.Components
                 showCursor = true;
             }
 
+            KeyboardState keyboardState = Keyboard.GetState();
+            if (keyboardState.IsKeyDown(Keys.Left) && cursorPosition > 0 && !keyLocker.IsKeyLocked(Keys.Left)) {
+                cursorPosition--;
+                cursorBlinkTimer.Reset();
+                showCursor = true;
+                keyLocker.LockKey(Keys.Left);
+                keyLocker.UnlockKey(Keys.Right);
+                cursorChangeTimer.SetWaitTime(150);
+            }
+            else if (keyboardState.IsKeyDown(Keys.Right) && cursorPosition < Text.Length && !keyLocker.IsKeyLocked(Keys.Right))
+            {
+                cursorPosition++;
+                cursorBlinkTimer.Reset();
+                showCursor = true;
+                keyLocker.LockKey(Keys.Right);
+                keyLocker.UnlockKey(Keys.Left);
+                cursorChangeTimer.SetWaitTime(150);
+            }
+
             if (cursorBlinkTimer.IsTimeUp())
             {
                 showCursor = !showCursor;
                 cursorBlinkTimer.Reset();
             }
+
+            if (cursorChangeTimer.IsTimeUp())
+            {
+                keyLocker.UnlockKey(Keys.Left);
+                keyLocker.UnlockKey(Keys.Right);
+            }
+
+
         }
 
 
@@ -93,15 +128,34 @@ namespace GameEngineTest.Components
         {
             if (e.Key == Keys.Back)
             {
-                if (Text.Length > 0)
+                if (Text.Length > 0 && cursorPosition > 0)
                 {
-                    Text = Text.Substring(0, Text.Length - 1);
+                    if (cursorPosition == Text.Length)
+                    {
+                        Text = Text.SubstringByIndexes(0, Text.Length - 1);
+                    }
+                    else
+                    {
+                        Text = Text.SubstringByIndexes(0, cursorPosition - 1) + Text.SubstringByIndexes(cursorPosition, Text.Length);
+                    }
                     cursorPosition--;
                 }
             }
             else
             {
-                Text += e.Character;
+                if (cursorPosition == Text.Length)
+                {
+                    Text += e.Character;
+                }
+                else if (cursorPosition == 0)
+                {
+                    Text = e.Character + Text;
+                }
+                else
+                {
+                    Text = Text.SubstringByIndexes(0, cursorPosition) + e.Character + Text.SubstringByIndexes(cursorPosition, Text.Length);
+                }
+                //Text += e.Character;
                 cursorPosition++;
             }
         }
