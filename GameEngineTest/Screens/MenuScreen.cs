@@ -21,6 +21,7 @@ namespace GameEngineTest.Screens
         protected int menuItemSelected = -1;
         protected BitmapFontGraphic playGameText;
         protected BitmapFontGraphic creditsText;
+        protected BitmapFontGraphic settingsText;
         protected Map background;
         protected Stopwatch keyTimer = new Stopwatch();
         protected int pointerLocationX, pointerLocationY;
@@ -46,6 +47,7 @@ namespace GameEngineTest.Screens
             BitmapFont arialOutline = ContentManager.LoadBitmapFont("BitmapFonts/Arial_Outline");
             playGameText = new BitmapFontGraphic("PLAY GAME", arialOutline, new Vector2(200, 150), new Color(49, 207, 240));
             creditsText = new BitmapFontGraphic("CREDITS", arialOutline, new Vector2(200, 250), new Color(49, 207, 240));
+            settingsText = new BitmapFontGraphic("SETTINGS", arialOutline, new Vector2(200, 350), new Color(49, 207, 240));
         }
 
         public override void Update(GameTime gameTime)
@@ -70,13 +72,13 @@ namespace GameEngineTest.Screens
             }
 
             // if down is pressed on last menu item or up is pressed on first menu item, "loop" the selection back around to the beginning/end
-            if (currentMenuItemHovered > 1)
+            if (currentMenuItemHovered > 2)
             {
                 currentMenuItemHovered = 0;
             }
             else if (currentMenuItemHovered < 0)
             {
-                currentMenuItemHovered = 1;
+                currentMenuItemHovered = 2;
             }
 
             // sets location for blue square in front of text (pointerLocation) and also sets color of spritefont text based on which menu item is being hovered
@@ -84,6 +86,7 @@ namespace GameEngineTest.Screens
             {
                 playGameText.Color = new Color(255, 215, 0);
                 creditsText.Color = new Color(49, 207, 240);
+                settingsText.Color = new Color(49, 207, 240);
                 pointerLocationX = 170;
                 pointerLocationY = 155;
             }
@@ -91,8 +94,17 @@ namespace GameEngineTest.Screens
             {
                 playGameText.Color = new Color(49, 207, 240);
                 creditsText.Color = new Color(255, 215, 0);
+                settingsText.Color = new Color(49, 207, 240);
                 pointerLocationX = 170;
                 pointerLocationY = 255;
+            }
+            else if (currentMenuItemHovered == 2)
+            {
+                playGameText.Color = new Color(49, 207, 240);
+                creditsText.Color = new Color(49, 207, 240);
+                settingsText.Color = new Color(255, 215, 0);
+                pointerLocationX = 170;
+                pointerLocationY = 355;
             }
 
             // if space is pressed on menu item, change to appropriate screen based on which menu item was chosen
@@ -111,6 +123,10 @@ namespace GameEngineTest.Screens
                 {
                     screenCoordinator.GameState = GameState.CREDITS;
                 }
+                else if (menuItemSelected == 2)
+                {
+                    screenCoordinator.GameState = GameState.SETTINGS;
+                }
             }
         }
 
@@ -119,6 +135,7 @@ namespace GameEngineTest.Screens
             background.Draw(graphicsHandler);
             playGameText.Draw(graphicsHandler);
             creditsText.Draw(graphicsHandler);
+            settingsText.Draw(graphicsHandler);
             graphicsHandler.DrawFilledRectangleWithBorder(new Rectangle(pointerLocationX, pointerLocationY, 20, 20), new Color(49, 207, 240), Color.Black, 2);
         }
     }

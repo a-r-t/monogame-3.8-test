@@ -6,6 +6,6 @@ namespace GameEngineTest.Engine
 {
     public enum GameState
     {
-        MENU, LEVEL, CREDITS
+        MENU, LEVEL, CREDITS, SETTINGS
     }
 }

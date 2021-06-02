@@ -12,12 +12,13 @@ namespace GameEngineTest.Engine
     {
         public GraphicsDevice GraphicsDevice { get; private set; }
         public SpriteBatch SpriteBatch { get; private set; }
-
+        private Rectangle currentViewportScissorRectangle;
 
         public GraphicsHandler(GraphicsDevice graphicsDevice, SpriteBatch spriteBatch)
         {
             GraphicsDevice = graphicsDevice;
             SpriteBatch = spriteBatch;
+            currentViewportScissorRectangle = SpriteBatch.GraphicsDevice.ScissorRectangle;
         }
 
         public void DrawRectangle(int x, int y, int width, int height, Color color, int borderThickness = 1)
@@ -73,6 +74,17 @@ namespace GameEngineTest.Engine
             SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X, rectangle.Y, rectangle.Width + borderThickness, borderThickness), (Color)borderColor);
             SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, borderThickness, rectangle.Height + borderThickness), (Color)borderColor);
             SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Width + borderThickness, borderThickness), (Color)borderColor);
+        }
+
+        public void DrawLine(Vector2 begin, Vector2 end, Color color, int width = 1)
+        {
+            Texture2D rectangleTexture = new Texture2D(GraphicsDevice, 1, 1);
+            rectangleTexture.SetData(new[] { Color.White });
+            Rectangle r = new Rectangle((int)begin.X, (int)begin.Y, (int)(end - begin).Length() + width, width);
+            Vector2 v = Vector2.Normalize(begin - end);
+            float angle = (float)Math.Acos(Vector2.Dot(v, -Vector2.UnitX));
+            if (begin.Y > end.Y) angle = MathHelper.TwoPi - angle;
+            SpriteBatch.Draw(rectangleTexture, r, null, color, angle, Vector2.Zero, SpriteEffects.None, 0);
         }
 
         public void DrawImage(Texture2D texture, Vector2 position, Rectangle? sourceRectangle = null, Color? color = null, float rotation = 0.0f, Vector2? origin = null, Vector2? scale = null, SpriteEffects spriteEffects = SpriteEffects.None, float layerDepth = 0f)
@@ -162,6 +174,20 @@ namespace GameEngineTest.Engine
             SpriteBatch.DrawString(spriteFont, text, position, (Color)color, rotation, (Vector2)origin, (Vector2)scale, spriteEffects, layerDepth);
         }
 
+        public void SetScissorRectangle(Rectangle scissorRectangle)
+        {
+            SpriteBatch.End();
+            SpriteBatch.GraphicsDevice.ScissorRectangle = scissorRectangle;
+            RasterizerState rasterizerState = new RasterizerState() { ScissorTestEnable = true, CullMode = CullMode.CullCounterClockwiseFace };
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, rasterizerState);
+        }
+
+        public void RemoveScissorRectangle()
+        {
+            SpriteBatch.End();
+            SpriteBatch.GraphicsDevice.ScissorRectangle = currentViewportScissorRectangle;
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullCounterClockwise);
+        }
     }
 
 

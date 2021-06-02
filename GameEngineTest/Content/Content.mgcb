@@ -108,3 +108,13 @@
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /build:SpriteFonts/Arial12.spritefont
+
+#begin SpriteFonts/Tahoma20.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:SpriteFonts/Tahoma20.spritefont
+
+#begin SpriteFonts/Roboto20.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/build:SpriteFonts/Roboto20.spritefont

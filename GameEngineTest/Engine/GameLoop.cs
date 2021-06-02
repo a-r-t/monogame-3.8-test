@@ -1,11 +1,11 @@
-﻿using Autofac.Core;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.BitmapFonts;
 using System;
 using System.Diagnostics;
+using System.Text;
 
 namespace GameEngineTest.Engine
 {
@@ -24,6 +24,7 @@ namespace GameEngineTest.Engine
         public static GameServiceContainer GameServiceContainer { get; private set; }
         public static int ViewportWidth { get; private set; }
         public static int ViewportHeight { get; private set; }
+        public static GameWindow GameWindow { get; private set; }
         RenderTarget2D renderTarget;
 
         public GameLoop()
@@ -47,7 +48,42 @@ namespace GameEngineTest.Engine
             graphics.ApplyChanges();
             ViewportWidth = GraphicsDevice.Viewport.Width;
             ViewportHeight = GraphicsDevice.Viewport.Height;
+
+            /*
+            this.Window.AllowUserResizing = true;
+            this.Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
+            */
+            GameWindow = this.Window;
+            //this.Window.TextInput += Window_TextInput;
         }
+
+        /*
+        private void Window_TextInput(object sender, TextInputEventArgs e)
+        {
+            StringBuilder builder = new StringBuilder();
+            if (e.Key == Keys.Back)
+            {
+                if (builder.Length > 0)
+                {
+                    builder.Remove(builder.Length - 1, 1);
+                }
+            }
+            else
+            {
+                builder.Append(e.Character);
+            }
+            this.Window.Title = builder.ToString();
+        }
+        */
+
+        /*
+        void Window_ClientSizeChanged(object sender, EventArgs e)
+        {
+            graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
+            graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
+            graphics.ApplyChanges();
+        }
+        */
 
         protected override void Initialize()
         {
@@ -107,6 +143,7 @@ namespace GameEngineTest.Engine
 
             screenManager.Draw(graphicsHandler);
             spriteBatch.End();
+
             // Drop the render target
             GraphicsDevice.SetRenderTarget(null);
         }

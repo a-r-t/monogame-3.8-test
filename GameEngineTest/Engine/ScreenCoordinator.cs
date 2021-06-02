@@ -25,7 +25,7 @@ namespace GameEngineTest.Engine
         public override void Initialize()
         {
             // start game off with Menu Screen
-            GameState = GameState.MENU;
+            GameState = GameState.SETTINGS;
         }
 
         public override void Update(GameTime gameTime)
@@ -55,6 +55,9 @@ namespace GameEngineTest.Engine
                     break;
                 case GameState.CREDITS:
                     currentScreen = new CreditsScreen(this);
+                    break;
+                case GameState.SETTINGS:
+                    currentScreen = new SettingsScreen(this);
                     break;
             }
             currentScreen.Initialize();
