@@ -1,4 +1,5 @@
 ﻿using GameEngineTest.Engine;
+using GameEngineTest.Extensions;
 using GameEngineTest.FontGraphics;
 using GameEngineTest.GameObject;
 using GameEngineTest.Utils;
@@ -18,7 +19,7 @@ namespace GameEngineTest.Components
     {
         protected Rectangle box;
         protected SpriteFont font;
-        protected string text;
+        public string Text { get; set; }
         protected int cursorPosition = 0;
         private Stopwatch cursorBlinkTimer;
         private bool showCursor = true;
@@ -37,7 +38,7 @@ namespace GameEngineTest.Components
             box.Color = Color.White;
             box.BorderColor = Color.Black;
             box.BorderThickness = 2;
-            text = defaultText;
+            Text = defaultText;
             font = spriteFont;
             cursorBlinkTimer = new Stopwatch();
             cursorBlinkTimer.SetWaitTime(500);
@@ -52,6 +53,17 @@ namespace GameEngineTest.Components
 
         public virtual void Update()
         {
+            MouseState mouseState = Mouse.GetState();
+            Vector2 mouseLocation = new Vector2(mouseState.X, mouseState.Y);
+            if (mouseState.LeftButton == ButtonState.Pressed && box.ContainsPoint(mouseLocation))
+            {
+                float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2)) / spacingBetweenLetters;
+
+                cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
+                cursorBlinkTimer.Reset();
+                showCursor = true;
+            }
+
             if (cursorBlinkTimer.IsTimeUp())
             {
                 showCursor = !showCursor;
@@ -65,11 +77,10 @@ namespace GameEngineTest.Components
             box.Draw(graphicsHandler);
 
             graphicsHandler.SetScissorRectangle(Bounds);
-            graphicsHandler.DrawString(font, text, new Vector2(box.X + box.BorderThickness + 2, box.Y), color: Color.Black);
+            graphicsHandler.DrawString(font, Text, new Vector2(box.X + box.BorderThickness + 2, box.Y), color: Color.Black);
 
             if (showCursor)
             {
-                Debug.WriteLine(font.Spacing);
                 graphicsHandler.DrawLine(new Vector2(box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters), box.Y + box.BorderThickness + 2), new Vector2(box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters), box.Y + box.Height - box.BorderThickness - 2), Color.Black);
             }
 
@@ -82,15 +93,15 @@ namespace GameEngineTest.Components
         {
             if (e.Key == Keys.Back)
             {
-                if (text.Length > 0)
+                if (Text.Length > 0)
                 {
-                    text = text.Substring(0, text.Length - 1);
+                    Text = Text.Substring(0, Text.Length - 1);
                     cursorPosition--;
                 }
             }
             else
             {
-                text += e.Character;
+                Text += e.Character;
                 cursorPosition++;
             }
         }

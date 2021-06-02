@@ -152,6 +152,11 @@ namespace GameEngineTest.GameObject
                     intersectRectangle.GetY1().Round() <= otherIntersectRectangle.GetY2().Round() && intersectRectangle.GetY2().Round() >=otherIntersectRectangle.GetY1().Round();
         }
 
+        public bool ContainsPoint(Vector2 point)
+        {
+            return point.X >= GetX1() && point.X <= GetScaledX2() && point.Y >= GetY1() && point.Y <= GetScaledY2();
+        }
+
         public override string ToString()
         {
             return string.Format("Rectangle: x=%s y=%s width=%s height=%s", X, Y, GetScaledWidth(), GetScaledHeight());
