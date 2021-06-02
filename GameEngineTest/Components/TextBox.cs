@@ -26,6 +26,7 @@ namespace GameEngineTest.Components
         private int spacingBetweenLetters;
         private Stopwatch cursorChangeTimer;
         private KeyLocker keyLocker = new KeyLocker();
+        public int CharacterLimit { get; set; }
 
         public Microsoft.Xna.Framework.Rectangle Bounds
         {
@@ -35,7 +36,7 @@ namespace GameEngineTest.Components
             }
         }
 
-        public TextBox(int x, int y, int width, SpriteFont spriteFont, string defaultText = "")
+        public TextBox(int x, int y, int width, SpriteFont spriteFont, string defaultText = "", int characterLimit = 0)
         {
             box = new Rectangle(x, y, width, spriteFont.LineSpacing);
             box.Color = Color.White;
@@ -50,6 +51,8 @@ namespace GameEngineTest.Components
             cursorChangeTimer = new Stopwatch();
 
             spacingBetweenLetters = (int)spriteFont.MeasureString("a").X;
+
+            CharacterLimit = characterLimit;
 
             GameLoop.GameWindow.TextInput += Window_TextInput;
         }
@@ -77,18 +80,20 @@ namespace GameEngineTest.Components
                 cursorPosition--;
                 cursorBlinkTimer.Reset();
                 showCursor = true;
+
                 keyLocker.LockKey(Keys.Left);
                 keyLocker.UnlockKey(Keys.Right);
-                cursorChangeTimer.SetWaitTime(150);
+                cursorChangeTimer.SetWaitTime(100);
             }
             else if (keyboardState.IsKeyDown(Keys.Right) && cursorPosition < Text.Length && !keyLocker.IsKeyLocked(Keys.Right))
             {
                 cursorPosition++;
                 cursorBlinkTimer.Reset();
                 showCursor = true;
+
                 keyLocker.LockKey(Keys.Right);
                 keyLocker.UnlockKey(Keys.Left);
-                cursorChangeTimer.SetWaitTime(150);
+                cursorChangeTimer.SetWaitTime(100);
             }
 
             if (cursorBlinkTimer.IsTimeUp())
@@ -102,10 +107,7 @@ namespace GameEngineTest.Components
                 keyLocker.UnlockKey(Keys.Left);
                 keyLocker.UnlockKey(Keys.Right);
             }
-
-
         }
-
 
         public virtual void Draw(GraphicsHandler graphicsHandler)
         {
@@ -139,9 +141,11 @@ namespace GameEngineTest.Components
                         Text = Text.SubstringByIndexes(0, cursorPosition - 1) + Text.SubstringByIndexes(cursorPosition, Text.Length);
                     }
                     cursorPosition--;
+                    cursorBlinkTimer.Reset();
+                    showCursor = true;
                 }
             }
-            else
+            else if (Text.Length < CharacterLimit)
             {
                 if (cursorPosition == Text.Length)
                 {
@@ -155,8 +159,9 @@ namespace GameEngineTest.Components
                 {
                     Text = Text.SubstringByIndexes(0, cursorPosition) + e.Character + Text.SubstringByIndexes(cursorPosition, Text.Length);
                 }
-                //Text += e.Character;
                 cursorPosition++;
+                cursorBlinkTimer.Reset();
+                showCursor = true;
             }
         }
     }
