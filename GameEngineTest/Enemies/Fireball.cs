@@ -1,6 +1,6 @@
 ﻿using GameEngineTest.Builders;
 using GameEngineTest.Engine;
-using GameEngineTest.GameObject;
+using GameEngineTest.GameObjects;
 using GameEngineTest.Level;
 using GameEngineTest.Utils;
 using System;

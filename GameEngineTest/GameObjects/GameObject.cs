@@ -19,7 +19,7 @@ using System.Text;
 	3. collision detection with a map
 	4. performing proper draw logic based on camera movement
  */
-namespace GameEngineTest.GameObject
+namespace GameEngineTest.GameObjects
 {
     public class GameObject : AnimatedSprite
     {
@@ -115,7 +115,7 @@ namespace GameEngineTest.GameObject
 			this.previousY = y;
 		}
 
-		public GameObject(Texture2D image, float x, float y, float scale, SpriteEffects spriteEffect, Rectangle bounds)
+		public GameObject(Texture2D image, float x, float y, float scale, SpriteEffects spriteEffect, RectangleGraphic bounds)
 			: base(x, y)
 		{
 			this.animations = new Dictionary<string, Frame[]>();
@@ -309,12 +309,12 @@ namespace GameEngineTest.GameObject
 		}
 
 		// gets scaled bounds taking into account map camera position
-		public Rectangle GetCalibratedScaledBounds()
+		public RectangleGraphic GetCalibratedScaledBounds()
 		{
 			if (map != null)
 			{
-				Rectangle scaledBounds = GetScaledBounds();
-				return new Rectangle(
+				RectangleGraphic scaledBounds = GetScaledBounds();
+				return new RectangleGraphic(
 					scaledBounds.GetX1().Round() - map.GetCamera().X.Round(),
 					scaledBounds.GetY1().Round() - map.GetCamera().Y.Round(),
 					scaledBounds.GetScaledWidth(),
@@ -357,7 +357,7 @@ namespace GameEngineTest.GameObject
 		{
 			if (map != null)
 			{
-				Rectangle scaledCalibratedBounds = GetCalibratedScaledBounds();
+				RectangleGraphic scaledCalibratedBounds = GetCalibratedScaledBounds();
 				scaledCalibratedBounds.Color = color;
 				scaledCalibratedBounds.Draw(graphicsHandler);
 			}

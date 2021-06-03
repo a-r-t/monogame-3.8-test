@@ -1,5 +1,5 @@
 ﻿using GameEngineTest.Extensions;
-using GameEngineTest.GameObject;
+using GameEngineTest.GameObjects;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -9,7 +9,7 @@ using System.Text;
 
 namespace GameEngineTest.Level
 {
-    public abstract class Player : GameObject.GameObject
+    public abstract class Player : GameObject
     {
         // values that affect player movement
         // these should be set in a subclass

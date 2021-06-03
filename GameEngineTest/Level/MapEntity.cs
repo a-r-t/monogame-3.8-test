@@ -1,4 +1,4 @@
-﻿using GameEngineTest.GameObject;
+﻿using GameEngineTest.GameObjects;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Text;
 
 namespace GameEngineTest.Level
 {
-    public class MapEntity : GameObject.GameObject
+    public class MapEntity : GameObject
     {
         public MapEntityStatus MapEntityStatus { get; set; } = MapEntityStatus.ACTIVE;
 
@@ -46,7 +46,7 @@ namespace GameEngineTest.Level
         {
         }
 
-        public MapEntity(Texture2D image, float x, float y, float scale, SpriteEffects spriteEffect, Rectangle bounds)
+        public MapEntity(Texture2D image, float x, float y, float scale, SpriteEffects spriteEffect, RectangleGraphic bounds)
             : base(image, x, y, scale, spriteEffect, bounds)
         {
         }

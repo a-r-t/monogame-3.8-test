@@ -14,7 +14,7 @@ using System.Text;
 	While this calls does not extend from Sprite, it is set up in a way where it is still treated by other classes as if it is a singular sprite (based on value of currentFrame)
 */
 
-namespace GameEngineTest.GameObject
+namespace GameEngineTest.GameObjects
 {
     public class AnimatedSprite : IntersectableRectangle
     {
@@ -250,12 +250,12 @@ namespace GameEngineTest.GameObject
 			return currentFrame.GetScaledHeight();
 		}
 
-		public Rectangle GetBounds()
+		public RectangleGraphic GetBounds()
 		{
 			return currentFrame.GetBounds();
 		}
 
-		public Rectangle GetScaledBounds()
+		public RectangleGraphic GetScaledBounds()
 		{
 			return currentFrame.GetScaledBounds();
 		}
@@ -300,12 +300,12 @@ namespace GameEngineTest.GameObject
 			return currentFrame.GetScaledBoundsY2();
 		}
 
-		public void SetBounds(Rectangle bounds)
+		public void SetBounds(RectangleGraphic bounds)
 		{
 			currentFrame.SetBounds(bounds);
 		}
 
-		public Rectangle GetIntersectRectangle()
+		public RectangleGraphic GetIntersectRectangle()
 		{
 			return currentFrame.GetIntersectRectangle();
 		}

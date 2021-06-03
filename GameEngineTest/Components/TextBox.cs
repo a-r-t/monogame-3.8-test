@@ -1,7 +1,7 @@
 ﻿using GameEngineTest.Engine;
 using GameEngineTest.Extensions;
 using GameEngineTest.FontGraphics;
-using GameEngineTest.GameObject;
+using GameEngineTest.GameObjects;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,14 +10,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Rectangle = GameEngineTest.GameObject.Rectangle;
 using Stopwatch = GameEngineTest.Utils.Stopwatch;
 
 namespace GameEngineTest.Components
 {
     public class TextBox
     {
-        protected Rectangle box;
+        protected RectangleGraphic box;
         protected SpriteFont font;
         public string Text { get; set; }
         protected int cursorPosition = 0;
@@ -41,7 +40,7 @@ namespace GameEngineTest.Components
 
         public TextBox(int x, int y, int width, SpriteFont spriteFont, string defaultText = "", int characterLimit = -1)
         {
-            box = new Rectangle(x, y, width, spriteFont.LineSpacing);
+            box = new RectangleGraphic(x, y, width, spriteFont.LineSpacing);
             box.Color = Color.White;
             box.BorderColor = Color.Black;
             box.BorderThickness = 2;

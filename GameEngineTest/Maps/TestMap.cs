@@ -1,7 +1,7 @@
 ﻿using GameEngineTest.EnchancedMapTiles;
 using GameEngineTest.Enemies;
 using GameEngineTest.Engine;
-using GameEngineTest.GameObject;
+using GameEngineTest.GameObjects;
 using GameEngineTest.Level;
 using GameEngineTest.NPCs;
 using GameEngineTest.Tilesets;
@@ -37,7 +37,7 @@ namespace GameEngineTest.Maps
                 GetPositionByTileIndex(27, 6),
                 TileType.JUMP_THROUGH_PLATFORM,
                 3,
-                new Rectangle(0, 6, 16, 4),
+                new RectangleGraphic(0, 6, 16, 4),
                 Direction.RIGHT
             ));
 

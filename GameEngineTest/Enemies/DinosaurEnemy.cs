@@ -1,7 +1,7 @@
 ﻿using GameEngineTest.Builders;
 using GameEngineTest.Engine;
 using GameEngineTest.Extensions;
-using GameEngineTest.GameObject;
+using GameEngineTest.GameObjects;
 using GameEngineTest.Level;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework.Graphics;

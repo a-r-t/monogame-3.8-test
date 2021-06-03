@@ -1,6 +1,6 @@
 ﻿using GameEngineTest.Engine;
 using GameEngineTest.FontGraphics;
-using GameEngineTest.GameObject;
+using GameEngineTest.GameObjects;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -60,7 +60,7 @@ namespace GameEngineTest.Level
             this.talkedToTime = talkedToTime;
         }
 
-        public NPC(Texture2D image, float x, float y, int talkedToTime, float scale, SpriteEffects spriteEffect, Rectangle bounds)
+        public NPC(Texture2D image, float x, float y, int talkedToTime, float scale, SpriteEffects spriteEffect, RectangleGraphic bounds)
             : base(image, x, y, scale, spriteEffect, bounds)
         {
             this.message = CreateMessage();

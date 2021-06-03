@@ -1,4 +1,4 @@
-﻿using GameEngineTest.GameObject;
+﻿using GameEngineTest.GameObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,9 +65,9 @@ namespace GameEngineTest.Builders
             return animationsCopy;
         }
 
-        public virtual GameObject.GameObject Build(float x, float y)
+        public virtual GameObject Build(float x, float y)
         {
-            return new GameObject.GameObject(x, y, CloneAnimations(), startingAnimationName);
+            return new GameObject(x, y, CloneAnimations(), startingAnimationName);
         }
     }
 }

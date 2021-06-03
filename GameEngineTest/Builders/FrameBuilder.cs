@@ -1,5 +1,5 @@
 ﻿using GameEngineTest.Extensions;
-using GameEngineTest.GameObject;
+using GameEngineTest.GameObjects;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace GameEngineTest.Builders
     {
         private Texture2D image;
         private int delay;
-        private Rectangle bounds;
+        private RectangleGraphic bounds;
         private float scale;
         private SpriteEffects spriteEffect;
 
@@ -28,7 +28,7 @@ namespace GameEngineTest.Builders
             this.spriteEffect = SpriteEffects.None;
         }
 
-        public FrameBuilder WithBounds(Rectangle bounds)
+        public FrameBuilder WithBounds(RectangleGraphic bounds)
         {
             this.bounds = bounds;
             return this;
@@ -36,7 +36,7 @@ namespace GameEngineTest.Builders
 
         public FrameBuilder WithBounds(float x, float y, int width, int height)
         {
-            this.bounds = new Rectangle(x.Round(), y.Round(), width, height);
+            this.bounds = new RectangleGraphic(x.Round(), y.Round(), width, height);
             return this;
         }
 

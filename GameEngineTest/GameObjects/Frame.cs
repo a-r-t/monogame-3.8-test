@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameEngineTest.GameObject
+namespace GameEngineTest.GameObjects
 {
     public class Frame : Sprite
     {
         private int delay;
 
-		public Frame(Texture2D image, float scale, SpriteEffects spriteEffect, Rectangle bounds, int delay)
+		public Frame(Texture2D image, float scale, SpriteEffects spriteEffect, RectangleGraphic bounds, int delay)
 			: base(image, scale, spriteEffect)
 		{
 			if (bounds != null)

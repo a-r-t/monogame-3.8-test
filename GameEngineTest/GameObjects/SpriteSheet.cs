@@ -6,7 +6,7 @@ using System.Text;
 
 // This class is for reading in a SpriteSheet (collection of images laid out in a specific way)
 // As long as each graphic on the sheet is the same size, it can parse it into sub images
-namespace GameEngineTest.GameObject
+namespace GameEngineTest.GameObjects
 {
     public class SpriteSheet
     {

@@ -1,6 +1,6 @@
 ﻿using GameEngineTest.Engine;
 using GameEngineTest.Extensions;
-using GameEngineTest.GameObject;
+using GameEngineTest.GameObjects;
 using GameEngineTest.Utils;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Text;
 // A majority of its job is just determining which map tiles, enemies, npcs, and enhanced map tiles are "active" each frame (active = included in update/draw cycle)
 namespace GameEngineTest.Level
 {
-    public class Camera : Rectangle
+    public class Camera : RectangleGraphic
     {
         // the current map this camera is attached to
         private Map map;
@@ -275,7 +275,7 @@ namespace GameEngineTest.Level
         }
 
         // checks if a game object's position falls within the camera's current radius
-        public bool ContainsUpdate(GameObject.GameObject gameObject)
+        public bool ContainsUpdate(GameObject gameObject)
         {
             return GetX1() - (tileWidth * UPDATE_OFF_SCREEN_RANGE) < gameObject.GetX() + gameObject.GetScaledWidth() &&
                     GetEndBoundX() + (tileWidth * UPDATE_OFF_SCREEN_RANGE) > gameObject.GetX() &&
@@ -285,7 +285,7 @@ namespace GameEngineTest.Level
 
         // checks if a game object's position falls within the camera's current radius
         // this does not include the extra range granted by the UDPATE_OFF_SCREEN_RANGE value, because there is no point to drawing graphics that can't be seen
-        public bool ContainsDraw(GameObject.GameObject gameObject)
+        public bool ContainsDraw(GameObject gameObject)
         {
             return GetX1() - tileWidth < gameObject.GetX() + gameObject.GetScaledWidth() && GetEndBoundX() + tileWidth > gameObject.GetX() &&
                     GetY1() - tileHeight < gameObject.GetY() + gameObject.GetScaledHeight() && GetEndBoundY() + tileHeight > gameObject.GetY();

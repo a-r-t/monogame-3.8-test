@@ -1,5 +1,5 @@
 ﻿using GameEngineTest.Engine;
-using GameEngineTest.GameObject;
+using GameEngineTest.GameObjects;
 using GameEngineTest.Level;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework.Graphics;
@@ -21,7 +21,7 @@ namespace GameEngineTest.EnchancedMapTiles
         private Direction direction;
 
 
-        public HorizontalMovingPlatform(Texture2D image, Point startLocation, Point endLocation, TileType tileType, float scale, Rectangle bounds, Direction startDirection)
+        public HorizontalMovingPlatform(Texture2D image, Point startLocation, Point endLocation, TileType tileType, float scale, RectangleGraphic bounds, Direction startDirection)
             : base(image, startLocation.X, startLocation.Y, tileType, scale, SpriteEffects.None, bounds)
         {
             this.startLocation = startLocation;

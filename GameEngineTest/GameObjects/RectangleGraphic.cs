@@ -5,9 +5,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using GameEngineTest.Extensions;
 
-namespace GameEngineTest.GameObject
+namespace GameEngineTest.GameObjects
 {
-    public class Rectangle : IntersectableRectangle
+    public class RectangleGraphic : IntersectableRectangle
     {
         public float X { get; set; }
         public float Y { get; set; }
@@ -18,7 +18,7 @@ namespace GameEngineTest.GameObject
         public Color BorderColor { get; set; }
         public int BorderThickness { get; set; }
 
-        public Rectangle(float x, float y, int width, int height)
+        public RectangleGraphic(float x, float y, int width, int height)
         {
             X = x;
             Y = y;
@@ -30,7 +30,7 @@ namespace GameEngineTest.GameObject
             BorderThickness = 0;
         }
 
-        public Rectangle(float x, float y, int width, int height, float scale)
+        public RectangleGraphic(float x, float y, int width, int height, float scale)
         {
             X = x;
             Y = y;
@@ -129,16 +129,16 @@ namespace GameEngineTest.GameObject
             }
         }
 
-        public virtual Rectangle GetIntersectRectangle()
+        public virtual RectangleGraphic GetIntersectRectangle()
         {
-            return new Rectangle(X, Y, GetScaledWidth(), GetScaledHeight());
+            return new RectangleGraphic(X, Y, GetScaledWidth(), GetScaledHeight());
         }
 
         // check if this intersects with another rectangle
         public bool Intersects(IntersectableRectangle other)
         {
-            Rectangle intersectRectangle = GetIntersectRectangle();
-            Rectangle otherIntersectRectangle = other.GetIntersectRectangle();
+            RectangleGraphic intersectRectangle = GetIntersectRectangle();
+            RectangleGraphic otherIntersectRectangle = other.GetIntersectRectangle();
             return intersectRectangle.GetX1().Round() < otherIntersectRectangle.GetX2().Round() && intersectRectangle.GetX2().Round() > otherIntersectRectangle.GetX1().Round() &&
                     intersectRectangle.GetY1().Round() < otherIntersectRectangle.GetY2().Round() && intersectRectangle.GetY2().Round() > otherIntersectRectangle.GetY1().Round();
         }
@@ -146,8 +146,8 @@ namespace GameEngineTest.GameObject
         // check if this overlaps with another rectangle
         public bool Overlaps(IntersectableRectangle other)
         {
-            Rectangle intersectRectangle = GetIntersectRectangle();
-            Rectangle otherIntersectRectangle = other.GetIntersectRectangle();
+            RectangleGraphic intersectRectangle = GetIntersectRectangle();
+            RectangleGraphic otherIntersectRectangle = other.GetIntersectRectangle();
             return intersectRectangle.GetX1().Round() <= otherIntersectRectangle.GetX2().Round() && intersectRectangle.GetX2().Round() >= otherIntersectRectangle.GetX1().Round() &&
                     intersectRectangle.GetY1().Round() <= otherIntersectRectangle.GetY2().Round() && intersectRectangle.GetY2().Round() >=otherIntersectRectangle.GetY1().Round();
         }

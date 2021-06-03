@@ -1,4 +1,5 @@
 ﻿using GameEngineTest.Extensions;
+using GameEngineTest.GameObjects;
 using GameEngineTest.Utils;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace GameEngineTest.Level
 {
     public class MapTileCollisionHandler
     {
-        public static float GetAdjustedPositionAfterCollisionCheckX(GameObject.GameObject gameObject, Map map, Direction direction)
+        public static float GetAdjustedPositionAfterCollisionCheckX(GameObject gameObject, Map map, Direction direction)
         {
             int numberOfTilesToCheck = Math.Max(gameObject.GetScaledBounds().Height / map.GetTileset().GetScaledSpriteHeight(), 1);
             float edgeBoundX = direction == Direction.LEFT ? gameObject.GetScaledBounds().GetX1() : gameObject.GetScaledBounds().GetX2();
@@ -51,7 +52,7 @@ namespace GameEngineTest.Level
             return 0;
         }
 
-        public static float GetAdjustedPositionAfterCollisionCheckY(GameObject.GameObject gameObject, Map map, Direction direction)
+        public static float GetAdjustedPositionAfterCollisionCheckY(GameObject gameObject, Map map, Direction direction)
         {
             int numberOfTilesToCheck = Math.Max(gameObject.GetScaledBounds().Width / map.GetTileset().GetScaledSpriteWidth(), 1);
             float edgeBoundY = direction == Direction.UP ? gameObject.GetScaledBounds().GetY1() : gameObject.GetScaledBounds().GetY2();
@@ -93,7 +94,7 @@ namespace GameEngineTest.Level
         }
 
         // based on tile type, perform logic to determine if a collision did occur with an intersecting tile or not
-        private static bool HasCollidedWithMapTile(GameObject.GameObject gameObject, MapTile mapTile, Direction direction)
+        private static bool HasCollidedWithMapTile(GameObject gameObject, MapTile mapTile, Direction direction)
         {
             switch (mapTile.TileType)
             {

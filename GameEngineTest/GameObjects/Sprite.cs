@@ -6,19 +6,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace GameEngineTest.GameObject
+namespace GameEngineTest.GameObjects
 {
-    public class Sprite : Rectangle, IntersectableRectangle
+    public class Sprite : RectangleGraphic, IntersectableRectangle
     {
         public Texture2D Image { get; set; }
         public SpriteEffects SpriteEffect { get; set; }
-        protected Rectangle bounds;
+        protected RectangleGraphic bounds;
 
         public Sprite(Texture2D image, float scale, SpriteEffects spriteEffect)
             : base(0, 0, image.Width, image.Height, scale)
         {
             Image = image;
-            this.bounds = new Rectangle(0, 0, image.Width, image.Height, scale);
+            this.bounds = new RectangleGraphic(0, 0, image.Width, image.Height, scale);
             SpriteEffect = spriteEffect;
         }
 
@@ -26,7 +26,7 @@ namespace GameEngineTest.GameObject
             : base(x, y, image.Width, image.Height, scale)
         {
             Image = image;
-            this.bounds = new Rectangle(x, y, image.Width, image.Height, scale);
+            this.bounds = new RectangleGraphic(x, y, image.Width, image.Height, scale);
             SpriteEffect = spriteEffect;
         }
 
@@ -35,14 +35,14 @@ namespace GameEngineTest.GameObject
             Image = Screen.ContentManager.LoadTexture(textureFilePath);
         }
 
-        public Rectangle GetHurtbox()
+        public RectangleGraphic GetHurtbox()
         {
-            return new Rectangle(GetBoundsX1(), GetBoundsY1(), bounds.Width, bounds.Height, Scale);
+            return new RectangleGraphic(GetBoundsX1(), GetBoundsY1(), bounds.Width, bounds.Height, Scale);
         }
 
-        public Rectangle GetBounds()
+        public RectangleGraphic GetBounds()
         {
-            return new Rectangle(GetBoundsX1(), GetBoundsY1(), bounds.Width, bounds.Height, Scale);
+            return new RectangleGraphic(GetBoundsX1(), GetBoundsY1(), bounds.Width, bounds.Height, Scale);
         }
 
 
@@ -86,22 +86,22 @@ namespace GameEngineTest.GameObject
             return GetScaledBoundsY1() + bounds.GetScaledHeight();
         }
 
-        public Rectangle GetScaledBounds()
+        public RectangleGraphic GetScaledBounds()
         {
-            return new Rectangle(GetScaledBoundsX1(), GetScaledBoundsY1(), bounds.GetScaledWidth(), bounds.GetScaledHeight());
+            return new RectangleGraphic(GetScaledBoundsX1(), GetScaledBoundsY1(), bounds.GetScaledWidth(), bounds.GetScaledHeight());
         }
 
-        public void SetBounds(Rectangle hurtbox)
+        public void SetBounds(RectangleGraphic hurtbox)
         {
-            this.bounds = new Rectangle(hurtbox.X, hurtbox.Y, hurtbox.Width, hurtbox.Height, Scale);
+            this.bounds = new RectangleGraphic(hurtbox.X, hurtbox.Y, hurtbox.Width, hurtbox.Height, Scale);
         }
 
         public void SetBounds(float x, float y, int width, int height)
         {
-            this.bounds = new Rectangle(x, y, width, height, Scale);
+            this.bounds = new RectangleGraphic(x, y, width, height, Scale);
         }
 
-        public override Rectangle GetIntersectRectangle()
+        public override RectangleGraphic GetIntersectRectangle()
         {
             return GetScaledBounds();
         }
@@ -118,7 +118,7 @@ namespace GameEngineTest.GameObject
 
         public void DrawBounds(GraphicsHandler graphicsHandler, Color color)
         {
-            Rectangle scaledBounds = GetScaledBounds();
+            RectangleGraphic scaledBounds = GetScaledBounds();
             scaledBounds.Color = color;
             scaledBounds.Draw(graphicsHandler);
         }

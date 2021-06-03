@@ -1,4 +1,4 @@
-﻿using GameEngineTest.GameObject;
+﻿using GameEngineTest.GameObjects;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -39,7 +39,7 @@ namespace GameEngineTest.Level
         {
         }
 
-        public Enemy(Texture2D image, float x, float y, float scale, SpriteEffects spriteEffect, Rectangle bounds)
+        public Enemy(Texture2D image, float x, float y, float scale, SpriteEffects spriteEffect, RectangleGraphic bounds)
             : base(image, x, y, scale, spriteEffect, bounds)
         {
         }

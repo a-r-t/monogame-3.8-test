@@ -1,5 +1,5 @@
 ﻿using GameEngineTest.Engine;
-using GameEngineTest.GameObject;
+using GameEngineTest.GameObjects;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -58,7 +58,7 @@ namespace GameEngineTest.Level
             TileType = tileType;
         }
 
-        public MapTile(Texture2D image, float x, float y, float scale, SpriteEffects spriteEffect, Rectangle bounds, TileType tileType)
+        public MapTile(Texture2D image, float x, float y, float scale, SpriteEffects spriteEffect, RectangleGraphic bounds, TileType tileType)
             : base(image, x, y, scale, spriteEffect, bounds)
         {
             TileType = tileType;
