@@ -16,25 +16,25 @@ namespace GameEngineTest.Components
 {
     public class TextBox
     {
+        public string Text { get; set; }
+        public int CharacterLimit { get; set; }
         protected RectangleGraphic box;
         protected SpriteFont font;
-        public string Text { get; set; }
         protected int cursorPosition = 0;
-        private Stopwatch cursorBlinkTimer;
-        private bool showCursor = true;
-        private int spacingBetweenLetters;
-        private Stopwatch cursorChangeTimer;
-        private KeyLocker keyLocker = new KeyLocker();
-        public int CharacterLimit { get; set; }
-        private int scrollOffset;
-        private bool isMouseDrag;
-        private int previousMouseX;
+        protected Stopwatch cursorBlinkTimer;
+        protected bool showCursor = true;
+        protected int spacingBetweenLetters;
+        protected Stopwatch cursorChangeTimer;
+        protected KeyLocker keyLocker = new KeyLocker();
+        protected int scrollOffset;
+        protected bool isMouseDrag;
+        protected int previousMouseX;
 
-        public Microsoft.Xna.Framework.Rectangle Bounds
+        public Rectangle Bounds
         {
             get
             {
-                return new Microsoft.Xna.Framework.Rectangle((int)box.X, (int)box.Y, box.Width, box.Height);
+                return new Rectangle((int)box.X, (int)box.Y, box.Width, box.Height);
             }
         }
 
@@ -70,23 +70,8 @@ namespace GameEngineTest.Components
             Vector2 mouseLocation = new Vector2(mouseState.X, mouseState.Y);
             if (mouseState.LeftButton == ButtonState.Pressed && box.ContainsPoint(mouseLocation) && cursorChangeTimer.IsTimeUp() && !isMouseDrag)
             {
-                float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + (scrollOffset * spacingBetweenLetters)) / spacingBetweenLetters;
-
-                int calculatedCursorIndex = Math.Min(mouseLocationOffset.Round(), Text.Length);
-                if (box.X + box.BorderThickness + 2 + (calculatedCursorIndex * spacingBetweenLetters) - (scrollOffset * spacingBetweenLetters) <= box.X + box.Width - box.BorderThickness - 2)
-                { 
-                    cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
-                    cursorBlinkTimer.Reset();
-                    showCursor = true;
-
-                    cursorChangeTimer.SetWaitTime(100);
-
-                    isMouseDrag = true;
-                    previousMouseX = mouseState.X;
-                }
-
+                OnMouseClick(mouseState, mouseLocation);
             }
-
             else if (mouseState.LeftButton == ButtonState.Released)
             {
                 isMouseDrag = false;
@@ -96,44 +81,86 @@ namespace GameEngineTest.Components
             {
                 if (mouseState.X != previousMouseX)
                 {
-                    int direction = mouseState.X - previousMouseX > 0 ? 1 : -1;
-
-                    if (direction == -1 && cursorPosition > 0)
-                    {
-                        float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + (scrollOffset * spacingBetweenLetters)) / spacingBetweenLetters;
-                        cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
-                        if (cursorPosition < 0)
-                        {
-                            cursorPosition = 0;
-                        }
-                        else if (cursorPosition > Text.Length)
-                        {
-                            cursorPosition = Text.Length;
-                        }
-                        cursorChangeTimer.SetWaitTime(100);
-                        showCursor = true;
-                    }
-                    else if (direction == 1 && cursorPosition < Text.Length)
-                    {
-                        float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + (scrollOffset * spacingBetweenLetters)) / spacingBetweenLetters;
-                        cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
-                        if (cursorPosition > Text.Length)
-                        {
-                            cursorPosition = Text.Length;
-                        }
-                        else if (cursorPosition < 0)
-                        {
-                            cursorPosition = 0;
-                        }
-                        cursorChangeTimer.SetWaitTime(100);
-                        showCursor = true;
-                    }
-                    previousMouseX = mouseState.X;
+                    OnMouseDrag(mouseState, mouseLocation);
                 }
             }
 
             KeyboardState keyboardState = Keyboard.GetState();
-            if (keyboardState.IsKeyDown(Keys.Left) && cursorPosition > 0 && !keyLocker.IsKeyLocked(Keys.Left)) {
+            OnKeyPress(keyboardState);
+            
+            if (cursorBlinkTimer.IsTimeUp())
+            {
+                showCursor = !showCursor;
+                cursorBlinkTimer.Reset();
+            }
+
+            if (cursorChangeTimer.IsTimeUp())
+            {
+                keyLocker.UnlockKey(Keys.Left);
+                keyLocker.UnlockKey(Keys.Right);
+            }
+
+            UpdateTextScroll();
+        }
+
+        protected virtual void OnMouseClick(MouseState mouseState, Vector2 mouseLocation)
+        {
+            float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + (scrollOffset * spacingBetweenLetters)) / spacingBetweenLetters;
+            int calculatedCursorIndex = Math.Min(mouseLocationOffset.Round(), Text.Length);
+            if (box.X + box.BorderThickness + 2 + (calculatedCursorIndex * spacingBetweenLetters) - (scrollOffset * spacingBetweenLetters) <= box.X + box.Width - box.BorderThickness - 2)
+            {
+                cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
+                cursorBlinkTimer.Reset();
+                showCursor = true;
+
+                cursorChangeTimer.SetWaitTime(100);
+
+                isMouseDrag = true;
+                previousMouseX = mouseState.X;
+            }
+        }
+
+        protected virtual void OnMouseDrag(MouseState mouseState, Vector2 mouseLocation)
+        {
+            int direction = mouseState.X - previousMouseX > 0 ? 1 : -1;
+
+            if (direction == -1 && cursorPosition > 0)
+            {
+                float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + (scrollOffset * spacingBetweenLetters)) / spacingBetweenLetters;
+                cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
+                if (cursorPosition < 0)
+                {
+                    cursorPosition = 0;
+                }
+                else if (cursorPosition > Text.Length)
+                {
+                    cursorPosition = Text.Length;
+                }
+                cursorChangeTimer.SetWaitTime(100);
+                showCursor = true;
+            }
+            else if (direction == 1 && cursorPosition < Text.Length)
+            {
+                float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + (scrollOffset * spacingBetweenLetters)) / spacingBetweenLetters;
+                cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
+                if (cursorPosition > Text.Length)
+                {
+                    cursorPosition = Text.Length;
+                }
+                else if (cursorPosition < 0)
+                {
+                    cursorPosition = 0;
+                }
+                cursorChangeTimer.SetWaitTime(100);
+                showCursor = true;
+            }
+            previousMouseX = mouseState.X;
+        }
+
+        protected virtual void OnKeyPress(KeyboardState keyboardState)
+        {
+            if (keyboardState.IsKeyDown(Keys.Left) && cursorPosition > 0 && !keyLocker.IsKeyLocked(Keys.Left))
+            {
                 cursorPosition--;
                 cursorBlinkTimer.Reset();
                 showCursor = true;
@@ -152,19 +179,10 @@ namespace GameEngineTest.Components
                 keyLocker.UnlockKey(Keys.Left);
                 cursorChangeTimer.SetWaitTime(100);
             }
+        }
 
-            if (cursorBlinkTimer.IsTimeUp())
-            {
-                showCursor = !showCursor;
-                cursorBlinkTimer.Reset();
-            }
-
-            if (cursorChangeTimer.IsTimeUp())
-            {
-                keyLocker.UnlockKey(Keys.Left);
-                keyLocker.UnlockKey(Keys.Right);
-            }
-
+        protected virtual void UpdateTextScroll()
+        {
             // if cursor position is off screen
             if (box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters) - (scrollOffset * spacingBetweenLetters) > box.X + box.Width - box.BorderThickness - 2)
             {
