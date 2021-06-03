@@ -46,6 +46,22 @@ namespace GameEngineTest.Components
             }
         }
 
+        protected int StartLocation
+        {
+            get
+            {
+                return (int)box.X + box.BorderThickness + 2;
+            }
+        }
+
+        protected int EndLocation
+        {
+            get
+            {
+                return (int)box.X + box.Width - box.BorderThickness - 2;
+            }
+        }
+
         public TextBox(int x, int y, int width, SpriteFont spriteFont, string defaultText = "", int characterLimit = -1)
         {
             box = new RectangleGraphic(x, y, width, spriteFont.LineSpacing);
@@ -114,9 +130,9 @@ namespace GameEngineTest.Components
 
         protected virtual void OnMouseClick(MouseState mouseState, Vector2 mouseLocation)
         {
-            float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + ScrollOffset) / spacingBetweenLetters;
+            float mouseLocationOffset = (mouseLocation.X - StartLocation + ScrollOffset) / spacingBetweenLetters;
             int calculatedCursorIndex = Math.Min(mouseLocationOffset.Round(), Text.Length);
-            if (box.X + box.BorderThickness + 2 + (calculatedCursorIndex * spacingBetweenLetters) - ScrollOffset <= box.X + box.Width - box.BorderThickness - 2)
+            if (StartLocation + (calculatedCursorIndex * spacingBetweenLetters) - ScrollOffset <= EndLocation)
             {
                 cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
                 cursorBlinkTimer.Reset();
@@ -135,7 +151,7 @@ namespace GameEngineTest.Components
 
             if (direction == -1 && cursorPosition > 0)
             {
-                float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + ScrollOffset) / spacingBetweenLetters;
+                float mouseLocationOffset = (mouseLocation.X - StartLocation + ScrollOffset) / spacingBetweenLetters;
                 cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
                 if (cursorPosition < 0)
                 {
@@ -150,7 +166,7 @@ namespace GameEngineTest.Components
             }
             else if (direction == 1 && cursorPosition < Text.Length)
             {
-                float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + ScrollOffset) / spacingBetweenLetters;
+                float mouseLocationOffset = (mouseLocation.X - StartLocation + ScrollOffset) / spacingBetweenLetters;
                 cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
                 if (cursorPosition > Text.Length)
                 {
@@ -193,11 +209,11 @@ namespace GameEngineTest.Components
         protected virtual void UpdateTextScroll()
         {
             // if cursor position is off screen
-            if (box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters) - ScrollOffset > box.X + box.Width - box.BorderThickness - 2)
+            if (StartLocation + (cursorPosition * spacingBetweenLetters) - ScrollOffset > EndLocation)
             {
                 scrollIndex++;
             }
-            else if (box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters) - ScrollOffset < box.X + box.BorderThickness + 2)
+            else if (StartLocation + (cursorPosition * spacingBetweenLetters) - ScrollOffset < StartLocation)
             {
                 scrollIndex--;
             }
@@ -208,11 +224,11 @@ namespace GameEngineTest.Components
             box.Draw(graphicsHandler);
 
             graphicsHandler.SetScissorRectangle(Bounds);
-            graphicsHandler.DrawString(font, Text, new Vector2(box.X + box.BorderThickness + 2 - ScrollOffset, box.Y), color: Color.Black);
+            graphicsHandler.DrawString(font, Text, new Vector2(StartLocation - ScrollOffset, box.Y), color: Color.Black);
 
             if (showCursor)
             {
-                graphicsHandler.DrawLine(new Vector2(box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters) - ScrollOffset, box.Y + box.BorderThickness + 2), new Vector2(box.X + box.BorderThickness + 2 + (cursorPosition * spacingBetweenLetters) - ScrollOffset, box.Y + box.Height - box.BorderThickness - 2), Color.Black);
+                graphicsHandler.DrawLine(new Vector2(StartLocation + (cursorPosition * spacingBetweenLetters) - ScrollOffset, box.Y + box.BorderThickness + 2), new Vector2(StartLocation + (cursorPosition * spacingBetweenLetters) - ScrollOffset, box.Y + box.Height - box.BorderThickness - 2), Color.Black);
             }
 
             graphicsHandler.RemoveScissorRectangle();
