@@ -28,6 +28,8 @@ namespace GameEngineTest.Components
         private KeyLocker keyLocker = new KeyLocker();
         public int CharacterLimit { get; set; }
         private int scrollOffset;
+        private bool isMouseDrag;
+        private int previousMouseX;
 
         public Microsoft.Xna.Framework.Rectangle Bounds
         {
@@ -67,12 +69,11 @@ namespace GameEngineTest.Components
         {
             MouseState mouseState = Mouse.GetState();
             Vector2 mouseLocation = new Vector2(mouseState.X, mouseState.Y);
-            if (mouseState.LeftButton == ButtonState.Pressed && box.ContainsPoint(mouseLocation) && cursorChangeTimer.IsTimeUp())
+            if (mouseState.LeftButton == ButtonState.Pressed && box.ContainsPoint(mouseLocation) && cursorChangeTimer.IsTimeUp() && !isMouseDrag)
             {
                 float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + (scrollOffset * spacingBetweenLetters)) / spacingBetweenLetters;
 
                 int calculatedCursorIndex = Math.Min(mouseLocationOffset.Round(), Text.Length);
-
                 if (box.X + box.BorderThickness + 2 + (calculatedCursorIndex * spacingBetweenLetters) - (scrollOffset * spacingBetweenLetters) <= box.X + box.Width - box.BorderThickness - 2)
                 { 
                     cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
@@ -80,8 +81,56 @@ namespace GameEngineTest.Components
                     showCursor = true;
 
                     cursorChangeTimer.SetWaitTime(100);
+
+                    isMouseDrag = true;
+                    previousMouseX = mouseState.X;
                 }
-                
+
+            }
+
+            else if (mouseState.LeftButton == ButtonState.Released)
+            {
+                isMouseDrag = false;
+            }
+
+            if (isMouseDrag && cursorChangeTimer.IsTimeUp())
+            {
+                if (mouseState.X != previousMouseX)
+                {
+                    int direction = mouseState.X - previousMouseX > 0 ? 1 : -1;
+
+                    if (direction == -1 && cursorPosition > 0)
+                    {
+                        float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + (scrollOffset * spacingBetweenLetters)) / spacingBetweenLetters;
+                        cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
+                        if (cursorPosition < 0)
+                        {
+                            cursorPosition = 0;
+                        }
+                        else if (cursorPosition > Text.Length)
+                        {
+                            cursorPosition = Text.Length;
+                        }
+                        cursorChangeTimer.SetWaitTime(100);
+                        showCursor = true;
+                    }
+                    else if (direction == 1 && cursorPosition < Text.Length)
+                    {
+                        float mouseLocationOffset = (mouseLocation.X - (box.X + box.BorderThickness + 2) + (scrollOffset * spacingBetweenLetters)) / spacingBetweenLetters;
+                        cursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
+                        if (cursorPosition > Text.Length)
+                        {
+                            cursorPosition = Text.Length;
+                        }
+                        else if (cursorPosition < 0)
+                        {
+                            cursorPosition = 0;
+                        }
+                        cursorChangeTimer.SetWaitTime(100);
+                        showCursor = true;
+                    }
+                    previousMouseX = mouseState.X;
+                }
             }
 
             KeyboardState keyboardState = Keyboard.GetState();
