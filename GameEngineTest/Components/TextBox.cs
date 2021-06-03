@@ -18,7 +18,33 @@ namespace GameEngineTest.Components
     {
         public string Text { get; set; }
         public int CharacterLimit { get; set; }
+        public Color CursorColor { get; set; }
+
         protected RectangleGraphic box;
+        public Color BackColor 
+        { 
+            get
+            {
+                return box.Color;
+            }
+            set
+            {
+                box.Color = value;
+            } 
+        }
+        public Color BorderColor 
+        { 
+            get
+            {
+                return box.BorderColor;
+            }
+            set
+            {
+                box.BorderColor = value;
+            }
+        }
+        public Color TextColor { get; set; }
+
         protected SpriteFont font;
         protected Stopwatch cursorBlinkTimer;
         protected bool showCursor = true;
@@ -114,6 +140,11 @@ namespace GameEngineTest.Components
             box.BorderThickness = 2;
             Text = defaultText;
             font = spriteFont;
+
+            CursorColor = Color.Black;
+            BackColor = Color.White;
+            BorderColor = Color.Black;
+            TextColor = Color.Black;
             
             cursorBlinkTimer = new Stopwatch();
             cursorBlinkTimer.SetWaitTime(500);
@@ -252,11 +283,11 @@ namespace GameEngineTest.Components
             box.Draw(graphicsHandler);
 
             graphicsHandler.SetScissorRectangle(Bounds);
-            graphicsHandler.DrawString(font, Text, new Vector2(StartLocationX - ScrollOffset, box.Y), color: Color.Black);
+            graphicsHandler.DrawString(font, Text, new Vector2(StartLocationX - ScrollOffset, box.Y), color: TextColor);
 
             if (showCursor)
             {
-                graphicsHandler.DrawLine(new Vector2(StartLocationX + CursorOffset - ScrollOffset, StartLocationY), new Vector2(StartLocationX + CursorOffset - ScrollOffset, EndLocationY), Color.Black);
+                graphicsHandler.DrawLine(new Vector2(StartLocationX + CursorOffset - ScrollOffset, StartLocationY), new Vector2(StartLocationX + CursorOffset - ScrollOffset, EndLocationY), CursorColor);
             }
 
             graphicsHandler.RemoveScissorRectangle();
