@@ -32,7 +32,8 @@ namespace GameEngineTest.Components
         protected int highlightCursorIndex;
         protected int highlightStartIndex;
         protected int highlightEndIndex;
-
+        protected bool disableCursor = false;
+        
         private int cursorPosition = 0;
         protected int CursorPosition
         {
@@ -227,6 +228,7 @@ namespace GameEngineTest.Components
                 highlightCursorIndex = CursorPosition;
                 highlightStartIndex = CursorPosition;
                 highlightEndIndex = CursorPosition;
+                disableCursor = false;
             }
         }
 
@@ -234,15 +236,13 @@ namespace GameEngineTest.Components
         {
             int direction = mouseState.X - previousMouseX > 0 ? 1 : -1;
 
-            if (direction == -1 && CursorPosition > 0)
+            if (direction == -1)
             {
                 if (CursorPosition > 0)
                 {
 
                     float mouseLocationOffset = (mouseLocation.X - StartLocationX + ScrollOffset) / spacingBetweenLetters;
                     CursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
-                    cursorChangeTimer.SetWaitTime(100);
-                    showCursor = true;
                 }
                 if (CursorPosition < highlightCursorIndex)
                 {
@@ -257,6 +257,13 @@ namespace GameEngineTest.Components
                     highlightStartIndex = CursorPosition;
                     highlightEndIndex = CursorPosition;
                 }
+
+                disableCursor = highlightStartIndex != highlightEndIndex;
+                if (!disableCursor)
+                {
+                    cursorChangeTimer.SetWaitTime(100);
+                    showCursor = true;
+                }
             }
             else if (direction == 1)
             {
@@ -264,8 +271,6 @@ namespace GameEngineTest.Components
                 {
                     float mouseLocationOffset = (mouseLocation.X - StartLocationX + ScrollOffset) / spacingBetweenLetters;
                     CursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
-                    cursorChangeTimer.SetWaitTime(100);
-                    showCursor = true;
                 }
                 if (CursorPosition > highlightCursorIndex)
                 {
@@ -279,6 +284,13 @@ namespace GameEngineTest.Components
                 {
                     highlightStartIndex = CursorPosition;
                     highlightEndIndex = CursorPosition;
+                }
+
+                disableCursor = highlightStartIndex != highlightEndIndex;
+                if (!disableCursor)
+                {
+                    cursorChangeTimer.SetWaitTime(100);
+                    showCursor = true;
                 }
             }
             previousMouseX = mouseState.X;
@@ -331,7 +343,7 @@ namespace GameEngineTest.Components
 
             graphicsHandler.DrawString(font, Text, new Vector2(StartLocationX - ScrollOffset, box.Y), color: TextColor);
 
-            if (showCursor)
+            if (showCursor && !disableCursor)
             {
                 graphicsHandler.DrawLine(new Vector2(StartLocationX + CursorOffset - ScrollOffset, StartLocationY), new Vector2(StartLocationX + CursorOffset - ScrollOffset, EndLocationY), CursorColor);
             }
