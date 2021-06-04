@@ -1,0 +1,8 @@
+TODO:
+
+translation matrix
+make better scissor rect code
+refactor stopwatch to use elapsed game time
+level editor
+fix pause
+UI tools

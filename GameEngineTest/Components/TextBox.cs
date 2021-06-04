@@ -18,34 +18,9 @@ namespace GameEngineTest.Components
     {
         public string Text { get; set; }
         public int CharacterLimit { get; set; }
-        public Color CursorColor { get; set; }
-
-        protected RectangleGraphic box;
-        public Color BackColor 
-        { 
-            get
-            {
-                return box.Color;
-            }
-            set
-            {
-                box.Color = value;
-            } 
-        }
-        public Color BorderColor 
-        { 
-            get
-            {
-                return box.BorderColor;
-            }
-            set
-            {
-                box.BorderColor = value;
-            }
-        }
-        public Color TextColor { get; set; }
 
         protected SpriteFont font;
+        protected RectangleGraphic box;
         protected Stopwatch cursorBlinkTimer;
         protected bool showCursor = true;
         protected int spacingBetweenLetters;
@@ -54,6 +29,9 @@ namespace GameEngineTest.Components
         protected int scrollIndex;
         protected bool isMouseDrag;
         protected int previousMouseX;
+        protected int highlightCursorIndex;
+        protected int highlightStartIndex;
+        protected int highlightEndIndex;
 
         private int cursorPosition = 0;
         protected int CursorPosition
@@ -132,6 +110,33 @@ namespace GameEngineTest.Components
             }
         }
 
+
+        public Color CursorColor { get; set; }
+        public Color TextColor { get; set; }
+        public Color HighlightColor { get; set; }
+        public Color BackColor
+        {
+            get
+            {
+                return box.Color;
+            }
+            set
+            {
+                box.Color = value;
+            }
+        }
+        public Color BorderColor
+        {
+            get
+            {
+                return box.BorderColor;
+            }
+            set
+            {
+                box.BorderColor = value;
+            }
+        }
+
         public TextBox(int x, int y, int width, SpriteFont spriteFont, string defaultText = "", int characterLimit = -1)
         {
             box = new RectangleGraphic(x, y, width, spriteFont.LineSpacing);
@@ -145,6 +150,7 @@ namespace GameEngineTest.Components
             BackColor = Color.White;
             BorderColor = Color.Black;
             TextColor = Color.Black;
+            HighlightColor = new Color(50, 151, 253);
             
             cursorBlinkTimer = new Stopwatch();
             cursorBlinkTimer.SetWaitTime(500);
@@ -217,6 +223,10 @@ namespace GameEngineTest.Components
 
                 isMouseDrag = true;
                 previousMouseX = mouseState.X;
+
+                highlightCursorIndex = CursorPosition;
+                highlightStartIndex = CursorPosition;
+                highlightEndIndex = CursorPosition;
             }
         }
 
@@ -226,17 +236,50 @@ namespace GameEngineTest.Components
 
             if (direction == -1 && CursorPosition > 0)
             {
-                float mouseLocationOffset = (mouseLocation.X - StartLocationX + ScrollOffset) / spacingBetweenLetters;
-                CursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
-                cursorChangeTimer.SetWaitTime(100);
-                showCursor = true;
+                if (CursorPosition > 0)
+                {
+
+                    float mouseLocationOffset = (mouseLocation.X - StartLocationX + ScrollOffset) / spacingBetweenLetters;
+                    CursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
+                    cursorChangeTimer.SetWaitTime(100);
+                    showCursor = true;
+                }
+                if (CursorPosition < highlightCursorIndex)
+                {
+                    highlightStartIndex = CursorPosition;
+                }
+                else if (CursorPosition > highlightCursorIndex)
+                {
+                    highlightEndIndex = CursorPosition;
+                }
+                else
+                {
+                    highlightStartIndex = CursorPosition;
+                    highlightEndIndex = CursorPosition;
+                }
             }
-            else if (direction == 1 && CursorPosition < Text.Length)
+            else if (direction == 1)
             {
-                float mouseLocationOffset = (mouseLocation.X - StartLocationX + ScrollOffset) / spacingBetweenLetters;
-                CursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
-                cursorChangeTimer.SetWaitTime(100);
-                showCursor = true;
+                if (CursorPosition < Text.Length)
+                {
+                    float mouseLocationOffset = (mouseLocation.X - StartLocationX + ScrollOffset) / spacingBetweenLetters;
+                    CursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
+                    cursorChangeTimer.SetWaitTime(100);
+                    showCursor = true;
+                }
+                if (CursorPosition > highlightCursorIndex)
+                {
+                    highlightEndIndex = CursorPosition;
+                }
+                else if (CursorPosition < highlightCursorIndex)
+                {
+                    highlightStartIndex = CursorPosition;
+                }
+                else
+                {
+                    highlightStartIndex = CursorPosition;
+                    highlightEndIndex = CursorPosition;
+                }
             }
             previousMouseX = mouseState.X;
         }
@@ -283,6 +326,9 @@ namespace GameEngineTest.Components
             box.Draw(graphicsHandler);
 
             graphicsHandler.SetScissorRectangle(Bounds);
+
+            graphicsHandler.DrawFilledRectangle(new Rectangle(StartLocationX + (highlightStartIndex * spacingBetweenLetters) - ScrollOffset, StartLocationY, ((highlightEndIndex - highlightStartIndex)  * spacingBetweenLetters), EndLocationY - StartLocationY), HighlightColor);
+
             graphicsHandler.DrawString(font, Text, new Vector2(StartLocationX - ScrollOffset, box.Y), color: TextColor);
 
             if (showCursor)
