@@ -115,6 +115,7 @@ namespace GameEngineTest.Components
         public Color CursorColor { get; set; }
         public Color TextColor { get; set; }
         public Color HighlightColor { get; set; }
+        public Color HighlightTextColor { get; set; }
         public Color BackColor
         {
             get
@@ -151,7 +152,8 @@ namespace GameEngineTest.Components
             BackColor = Color.White;
             BorderColor = Color.Black;
             TextColor = Color.Black;
-            HighlightColor = new Color(50, 151, 253);
+            HighlightColor = new Color(50, 151, 253); // blue
+            HighlightTextColor = Color.White;
             
             cursorBlinkTimer = new Stopwatch();
             cursorBlinkTimer.SetWaitTime(500);
@@ -257,13 +259,6 @@ namespace GameEngineTest.Components
                     highlightStartIndex = CursorPosition;
                     highlightEndIndex = CursorPosition;
                 }
-
-                disableCursor = highlightStartIndex != highlightEndIndex;
-                if (!disableCursor)
-                {
-                    cursorChangeTimer.SetWaitTime(100);
-                    showCursor = true;
-                }
             }
             else if (direction == 1)
             {
@@ -285,14 +280,15 @@ namespace GameEngineTest.Components
                     highlightStartIndex = CursorPosition;
                     highlightEndIndex = CursorPosition;
                 }
-
-                disableCursor = highlightStartIndex != highlightEndIndex;
-                if (!disableCursor)
-                {
-                    cursorChangeTimer.SetWaitTime(100);
-                    showCursor = true;
-                }
             }
+
+            disableCursor = highlightStartIndex != highlightEndIndex;
+            if (!disableCursor)
+            {
+                cursorChangeTimer.SetWaitTime(100);
+                showCursor = true;
+            }
+
             previousMouseX = mouseState.X;
         }
 
@@ -339,10 +335,13 @@ namespace GameEngineTest.Components
 
             graphicsHandler.SetScissorRectangle(Bounds);
 
+            // highlighting
             graphicsHandler.DrawFilledRectangle(new Rectangle(StartLocationX + (highlightStartIndex * spacingBetweenLetters) - ScrollOffset, StartLocationY, ((highlightEndIndex - highlightStartIndex)  * spacingBetweenLetters), EndLocationY - StartLocationY), HighlightColor);
 
+            // text
             graphicsHandler.DrawString(font, Text, new Vector2(StartLocationX - ScrollOffset, box.Y), color: TextColor);
 
+            // cursor
             if (showCursor && !disableCursor)
             {
                 graphicsHandler.DrawLine(new Vector2(StartLocationX + CursorOffset - ScrollOffset, StartLocationY), new Vector2(StartLocationX + CursorOffset - ScrollOffset, EndLocationY), CursorColor);
@@ -350,6 +349,26 @@ namespace GameEngineTest.Components
 
             graphicsHandler.RemoveScissorRectangle();
 
+            if (highlightStartIndex != highlightEndIndex)
+            {
+                int highlightX = StartLocationX + (highlightStartIndex * spacingBetweenLetters) - ScrollOffset;
+                int highlightWidth = ((highlightEndIndex - highlightStartIndex) * spacingBetweenLetters);
+                if (highlightX + highlightWidth > box.X + box.Width)
+                {
+                    highlightWidth = (int)box.X + box.Width - highlightX;
+                }
+                if (highlightX < box.X)
+                {
+                    int difference = (int)box.X - highlightX;
+                    highlightX = (int)box.X;
+                    highlightWidth -= difference;
+                }
+                graphicsHandler.SetScissorRectangle(new Rectangle(highlightX, StartLocationY, highlightWidth, EndLocationY - StartLocationY));
+
+                graphicsHandler.DrawString(font, Text, new Vector2(StartLocationX - ScrollOffset, box.Y), color: HighlightTextColor);
+
+                graphicsHandler.RemoveScissorRectangle();
+            }
         }
 
         // event for handling keyboard input from OS
