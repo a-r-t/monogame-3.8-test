@@ -632,27 +632,59 @@ namespace GameEngineTest.Components
                 }
                 else if (CharacterLimit < 0 || Text.Length < CharacterLimit)
                 {
-                    if (CursorPosition == Text.Length)
+                    if (highlightStartIndex == highlightEndIndex)
                     {
-                        Text += e.Character;
-                    }
-                    else if (CursorPosition == 0)
-                    {
-                        Text = e.Character + Text;
+                        if (CursorPosition == Text.Length)
+                        {
+                            Text += e.Character;
+                        }
+                        else if (CursorPosition == 0)
+                        {
+                            Text = e.Character + Text;
+                        }
+                        else
+                        {
+                            Text = Text.SubstringByIndexes(0, CursorPosition) + e.Character + Text.SubstringByIndexes(CursorPosition, Text.Length);
+                        }
+                        CursorPosition++;
+                        cursorBlinkTimer.Reset();
+                        showCursor = true;
+
+                        highlightCursorIndex = CursorPosition;
+                        highlightStartIndex = CursorPosition;
+                        highlightEndIndex = CursorPosition;
+                        disableCursor = false;
+                        isMouseDrag = false;
                     }
                     else
                     {
-                        Text = Text.SubstringByIndexes(0, CursorPosition) + e.Character + Text.SubstringByIndexes(CursorPosition, Text.Length);
-                    }
-                    CursorPosition++;
-                    cursorBlinkTimer.Reset();
-                    showCursor = true;
+                        if (highlightStartIndex == 0 && highlightEndIndex == Text.Length)
+                        {
+                            Text = e.Character.ToString();
+                        }
+                        else if (highlightStartIndex == 0)
+                        {
+                            Text = e.Character + Text.Substring(highlightEndIndex);
+                        }
+                        else if (highlightEndIndex == Text.Length)
+                        {
+                            Text = Text.Substring(0, highlightStartIndex) + e.Character;
+                        }
+                        else
+                        {
+                            Text = Text.SubstringByIndexes(0, highlightStartIndex) + e.Character + Text.SubstringByIndexes(highlightEndIndex, Text.Length);
+                        }
 
-                    highlightCursorIndex = CursorPosition;
-                    highlightStartIndex = CursorPosition;
-                    highlightEndIndex = CursorPosition;
-                    disableCursor = false;
-                    isMouseDrag = false;
+                        ScrollIndex -= highlightEndIndex - highlightStartIndex;
+                        CursorPosition = highlightEndIndex;
+                        highlightCursorIndex = CursorPosition;
+                        highlightStartIndex = CursorPosition;
+                        highlightEndIndex = CursorPosition;
+                        isMouseDrag = false;
+                        disableCursor = false;
+                        cursorBlinkTimer.Reset();
+                        showCursor = true;
+                    }
                 }
             }
         }
