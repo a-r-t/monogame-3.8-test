@@ -30,7 +30,6 @@ namespace GameEngineTest.Components
         protected int spacingBetweenLetters;
         protected Stopwatch cursorChangeTimer;
         protected KeyLocker keyLocker = new KeyLocker();
-        protected int scrollIndex;
         protected bool isMouseDrag;
         protected int previousMouseX;
         protected int highlightCursorIndex;
@@ -59,11 +58,28 @@ namespace GameEngineTest.Components
             }
         }
 
+        private int scrollIndex = 0;
+        protected int ScrollIndex
+        {
+            get
+            {
+                return scrollIndex;
+            }
+            set
+            {
+                scrollIndex = value;
+                if (scrollIndex < 0)
+                {
+                    scrollIndex = 0;
+                }
+            }
+        }
+
         protected int ScrollOffset
         {
             get
             {
-                return scrollIndex * spacingBetweenLetters;
+                return ScrollIndex * spacingBetweenLetters;
             }
         }
 
@@ -380,7 +396,7 @@ namespace GameEngineTest.Components
                         }
                         else
                         {
-                            Text = Text.SubstringByIndexes(0, highlightStartIndex) + pastedText + Text.SubstringByIndexes(highlightEndIndex + 1, Text.Length);
+                            Text = Text.SubstringByIndexes(0, highlightStartIndex) + pastedText + Text.SubstringByIndexes(highlightEndIndex, Text.Length);
                         }
                         CursorPosition = highlightEndIndex;
                         highlightCursorIndex = CursorPosition;
@@ -400,11 +416,11 @@ namespace GameEngineTest.Components
             // if cursor position is off screen
             if (StartLocationX + CursorOffset - ScrollOffset > EndLocationX)
             {
-                scrollIndex++;
+                ScrollIndex++;
             }
             else if (StartLocationX + CursorOffset - ScrollOffset < StartLocationX)
             {
-                scrollIndex--;
+                ScrollIndex--;
             }
         }
 
@@ -458,17 +474,53 @@ namespace GameEngineTest.Components
             {
                 if (e.Key == Keys.Back)
                 {
-                    if (Text.Length > 0 && CursorPosition > 0)
+                    if (highlightStartIndex == highlightEndIndex)
                     {
-                        if (CursorPosition == Text.Length)
+                        if (Text.Length > 0 && CursorPosition > 0)
                         {
-                            Text = Text.SubstringByIndexes(0, Text.Length - 1);
+                            if (CursorPosition == Text.Length)
+                            {
+                                Text = Text.SubstringByIndexes(0, Text.Length - 1);
+                            }
+                            else
+                            {
+                                Text = Text.SubstringByIndexes(0, CursorPosition - 1) + Text.SubstringByIndexes(CursorPosition, Text.Length);
+                            }
+                            CursorPosition--;
+                            cursorBlinkTimer.Reset();
+                            showCursor = true;
+                            if (ScrollIndex > 0)
+                            {
+                                ScrollIndex--;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (highlightStartIndex == 0 && highlightEndIndex == Text.Length)
+                        {
+                            Text = "";
+                        }
+                        else if (highlightStartIndex == 0)
+                        {
+                            Text = Text.Substring(highlightEndIndex);
+                        }
+                        else if (highlightEndIndex == Text.Length)
+                        {
+                            Text = Text.Substring(0, highlightStartIndex);
                         }
                         else
                         {
-                            Text = Text.SubstringByIndexes(0, CursorPosition - 1) + Text.SubstringByIndexes(CursorPosition, Text.Length);
+                            Text = Text.SubstringByIndexes(0, highlightStartIndex) + Text.SubstringByIndexes(highlightEndIndex, Text.Length);
                         }
-                        CursorPosition--;
+
+                        ScrollIndex -= highlightEndIndex - highlightStartIndex;
+                        CursorPosition = highlightStartIndex;
+                        highlightCursorIndex = CursorPosition;
+                        highlightStartIndex = CursorPosition;
+                        highlightEndIndex = CursorPosition;
+                        isMouseDrag = false;
+                        disableCursor = false;
                         cursorBlinkTimer.Reset();
                         showCursor = true;
                     }
