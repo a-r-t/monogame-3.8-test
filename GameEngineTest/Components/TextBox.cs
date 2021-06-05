@@ -32,10 +32,13 @@ namespace GameEngineTest.Components
         protected KeyLocker keyLocker = new KeyLocker();
         protected bool isMouseDrag;
         protected int previousMouseX;
+        protected Vector2 previousMouseLocation;
         protected int highlightCursorIndex;
         protected int highlightStartIndex;
         protected int highlightEndIndex;
         protected bool disableCursor = false;
+        protected Stopwatch clickTimer;
+        private bool clickOnce = true;
         
         private int cursorPosition = 0;
         protected int CursorPosition
@@ -131,6 +134,22 @@ namespace GameEngineTest.Components
             }
         }
 
+        protected int MaxScrollIndex
+        {
+            get
+            {
+                int amountOfRoomBeforeScroll = (EndLocationX - StartLocationX) / spacingBetweenLetters;
+                if (Text.Length <= amountOfRoomBeforeScroll)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return Text.Length - amountOfRoomBeforeScroll;
+                }
+            }
+        }
+
 
         public Color CursorColor { get; set; }
         public Color TextColor { get; set; }
@@ -185,6 +204,9 @@ namespace GameEngineTest.Components
             CharacterLimit = characterLimit;
 
             GameLoop.GameWindow.TextInput += Window_TextInput;
+
+            clickTimer = new Stopwatch();
+            clickTimer.SetWaitTime(SystemInformation.DoubleClickTime);
         }
 
         ~TextBox()
@@ -204,6 +226,10 @@ namespace GameEngineTest.Components
             else if (mouseState.LeftButton == ButtonState.Released)
             {
                 isMouseDrag = false;
+                if (clickTimer.IsTimeUp())
+                {
+                    clickOnce = false;
+                }
             }
 
             if (isMouseDrag && cursorChangeTimer.IsTimeUp())
@@ -239,13 +265,22 @@ namespace GameEngineTest.Components
             }
 
             UpdateTextScroll();
+
+            previousMouseLocation = new Vector2(mouseState.X, mouseState.Y);
         }
 
         protected virtual void OnMouseClick(MouseState mouseState, Vector2 mouseLocation)
         {
             float mouseLocationOffset = (mouseLocation.X - StartLocationX + ScrollOffset) / spacingBetweenLetters;
             int calculatedCursorIndex = Math.Min(mouseLocationOffset.Round(), Text.Length);
-            if (StartLocationX + (calculatedCursorIndex * spacingBetweenLetters) - ScrollOffset <= EndLocationX)
+            
+            // if double click without moving mouse, select all text
+            if (clickOnce && !clickTimer.IsTimeUp() && Math.Min(mouseLocationOffset.Round(), Text.Length) == CursorPosition)
+            {
+                HighlightAllText();
+            }
+            // if single click, move cursor
+            else if (StartLocationX + (calculatedCursorIndex * spacingBetweenLetters) - ScrollOffset <= EndLocationX)
             {
                 CursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
                 cursorBlinkTimer.Reset();
@@ -260,6 +295,8 @@ namespace GameEngineTest.Components
                 highlightStartIndex = CursorPosition;
                 highlightEndIndex = CursorPosition;
                 disableCursor = false;
+                clickTimer.Reset();
+                clickOnce = true;
             }
         }
 
@@ -367,7 +404,7 @@ namespace GameEngineTest.Components
                     } 
                     else
                     {
-                        CursorPosition = highlightStartIndex; 
+                        CursorPosition = highlightStartIndex;
                     }
                     cursorBlinkTimer.Reset();
                     showCursor = true;
@@ -507,20 +544,37 @@ namespace GameEngineTest.Components
                         showCursor = true;
                     }
                 }
+                // ctrl + a (select all text)
+                else if (keyboardState.IsKeyDown(Keys.A))
+                {
+                    HighlightAllText();
+                }
+
             }
         }
 
         protected virtual void UpdateTextScroll()
         {
             // if cursor position is off screen
-            if (StartLocationX + CursorOffset - ScrollOffset > EndLocationX)
+            while(StartLocationX + CursorOffset - ScrollOffset > EndLocationX)
             {
                 ScrollIndex++;
             }
-            else if (StartLocationX + CursorOffset - ScrollOffset < StartLocationX)
+
+            while(StartLocationX + CursorOffset - ScrollOffset < StartLocationX)
             {
                 ScrollIndex--;
             }
+        }
+
+        protected virtual void HighlightAllText()
+        {
+            disableCursor = true;
+            highlightCursorIndex = 0;
+            highlightStartIndex = 0;
+            highlightEndIndex = Text.Length;
+            CursorPosition = Text.Length;
+            ScrollIndex = MaxScrollIndex;
         }
 
         public virtual void Draw(GraphicsHandler graphicsHandler)
