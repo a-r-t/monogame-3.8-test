@@ -11,6 +11,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Stopwatch = GameEngineTest.Utils.Stopwatch;
+using System.Windows.Forms;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
+using System.Text.RegularExpressions;
 
 namespace GameEngineTest.Components
 {
@@ -209,6 +213,15 @@ namespace GameEngineTest.Components
                 keyLocker.UnlockKey(Keys.Right);
             }
 
+            if (keyboardState.IsKeyUp(Keys.C))
+            {
+                keyLocker.UnlockKey(Keys.C);
+            }
+            if (keyboardState.IsKeyUp(Keys.V))
+            {
+                keyLocker.UnlockKey(Keys.V);
+            }
+
             UpdateTextScroll();
         }
 
@@ -314,6 +327,72 @@ namespace GameEngineTest.Components
                 keyLocker.UnlockKey(Keys.Left);
                 cursorChangeTimer.SetWaitTime(100);
             }
+
+            // ctrl c, ctrl v
+            if (keyboardState.IsKeyDown(Keys.LeftControl) || keyboardState.IsKeyDown(Keys.RightControl)) {
+                if (keyboardState.IsKeyDown(Keys.C) && !keyLocker.IsKeyLocked(Keys.C))
+                {
+                    if (highlightStartIndex != highlightEndIndex)
+                    {
+                        string copiedText = Text.SubstringByIndexes(highlightStartIndex, highlightEndIndex);
+                        Clipboard.SetText(copiedText);
+                        keyLocker.LockKey(Keys.C);
+                    }
+                }
+                else if (keyboardState.IsKeyDown(Keys.V) && !keyLocker.IsKeyLocked(Keys.V))
+                {
+                    keyLocker.LockKey(Keys.V);
+                    string pastedText = Clipboard.GetText();
+                    // append/insert (no highlighting)
+                    if (highlightStartIndex == highlightEndIndex)
+                    {
+                        if (CursorPosition == Text.Length)
+                        {
+                            Text += pastedText;
+                        }
+                        else if (CursorPosition == 0)
+                        {
+                            Text = pastedText + Text;
+                        }
+                        else
+                        {
+                            Text = Text.SubstringByIndexes(0, CursorPosition) + pastedText + Text.SubstringByIndexes(CursorPosition, Text.Length);
+                        }
+                        CursorPosition += pastedText.Length;
+                        disableCursor = false;
+                        cursorBlinkTimer.Reset();
+                        showCursor = true;
+                    }
+                    // replace highlighted text
+                    else
+                    {
+                        if (highlightStartIndex == 0 && highlightEndIndex == Text.Length)
+                        {
+                            Text = pastedText;
+                        }
+                        else if (highlightStartIndex == 0)
+                        {
+                            Text = pastedText + Text.Substring(pastedText.Length);
+                        }
+                        else if (highlightEndIndex == Text.Length)
+                        {
+                            Text = Text.SubstringByIndexes(0, highlightStartIndex) + pastedText;
+                        }
+                        else
+                        {
+                            Text = Text.SubstringByIndexes(0, highlightStartIndex) + pastedText + Text.SubstringByIndexes(highlightEndIndex + 1, Text.Length);
+                        }
+                        CursorPosition = highlightEndIndex;
+                        highlightCursorIndex = CursorPosition;
+                        highlightStartIndex = CursorPosition;
+                        highlightEndIndex = CursorPosition;
+                        isMouseDrag = false;
+                        disableCursor = false;
+                        cursorBlinkTimer.Reset();
+                        showCursor = true;
+                    }
+                }
+            }
         }
 
         protected virtual void UpdateTextScroll()
@@ -374,40 +453,44 @@ namespace GameEngineTest.Components
         // event for handling keyboard input from OS
         private void Window_TextInput(object sender, TextInputEventArgs e)
         {
-            if (e.Key == Keys.Back)
+            KeyboardState keyboardState = Keyboard.GetState();
+            if (!keyboardState.IsKeyDown(Keys.LeftControl) && !keyboardState.IsKeyDown(Keys.RightControl)) // prevents ctrl + c and stuff from breaking since draw string cannot draw those weird characters
             {
-                if (Text.Length > 0 && CursorPosition > 0)
+                if (e.Key == Keys.Back)
+                {
+                    if (Text.Length > 0 && CursorPosition > 0)
+                    {
+                        if (CursorPosition == Text.Length)
+                        {
+                            Text = Text.SubstringByIndexes(0, Text.Length - 1);
+                        }
+                        else
+                        {
+                            Text = Text.SubstringByIndexes(0, CursorPosition - 1) + Text.SubstringByIndexes(CursorPosition, Text.Length);
+                        }
+                        CursorPosition--;
+                        cursorBlinkTimer.Reset();
+                        showCursor = true;
+                    }
+                }
+                else if (CharacterLimit < 0 || Text.Length < CharacterLimit)
                 {
                     if (CursorPosition == Text.Length)
                     {
-                        Text = Text.SubstringByIndexes(0, Text.Length - 1);
+                        Text += e.Character;
+                    }
+                    else if (CursorPosition == 0)
+                    {
+                        Text = e.Character + Text;
                     }
                     else
                     {
-                        Text = Text.SubstringByIndexes(0, CursorPosition - 1) + Text.SubstringByIndexes(CursorPosition, Text.Length);
+                        Text = Text.SubstringByIndexes(0, CursorPosition) + e.Character + Text.SubstringByIndexes(CursorPosition, Text.Length);
                     }
-                    CursorPosition--;
+                    CursorPosition++;
                     cursorBlinkTimer.Reset();
                     showCursor = true;
                 }
-            }
-            else if (CharacterLimit < 0 || Text.Length < CharacterLimit)
-            {
-                if (CursorPosition == Text.Length)
-                {
-                    Text += e.Character;
-                }
-                else if (CursorPosition == 0)
-                {
-                    Text = e.Character + Text;
-                }
-                else
-                {
-                    Text = Text.SubstringByIndexes(0, CursorPosition) + e.Character + Text.SubstringByIndexes(CursorPosition, Text.Length);
-                }
-                CursorPosition++;
-                cursorBlinkTimer.Reset();
-                showCursor = true;
             }
         }
     }
