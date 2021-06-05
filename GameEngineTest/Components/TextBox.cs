@@ -323,25 +323,124 @@ namespace GameEngineTest.Components
 
         protected virtual void OnKeyPress(KeyboardState keyboardState)
         {
-            if (keyboardState.IsKeyDown(Keys.Left) && CursorPosition > 0 && !keyLocker.IsKeyLocked(Keys.Left))
+            // if left is pressed
+            if (keyboardState.IsKeyDown(Keys.Left) && !keyLocker.IsKeyLocked(Keys.Left))
             {
-                CursorPosition--;
-                cursorBlinkTimer.Reset();
-                showCursor = true;
+                // if shift key is also held, highlight
+                if (keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift))
+                {
+                    if (CursorPosition > 0)
+                    {
+                        CursorPosition--;
+                        isMouseDrag = true;
+                    }
+                    if (CursorPosition < highlightCursorIndex)
+                    {
+                        highlightStartIndex = CursorPosition;
+                    }
+                    else if (CursorPosition > highlightCursorIndex)
+                    {
+                        highlightEndIndex = CursorPosition;
+                    }
+                    else
+                    {
+                        highlightStartIndex = CursorPosition;
+                        highlightEndIndex = CursorPosition;
+                    }
+                    disableCursor = highlightStartIndex != highlightEndIndex;
+                    if (!disableCursor)
+                    {
+                        cursorChangeTimer.SetWaitTime(100);
+                        showCursor = true;
+                    }
 
-                keyLocker.LockKey(Keys.Left);
-                keyLocker.UnlockKey(Keys.Right);
-                cursorChangeTimer.SetWaitTime(100);
+                    keyLocker.LockKey(Keys.Left);
+                    keyLocker.UnlockKey(Keys.Right);
+                    cursorChangeTimer.SetWaitTime(100);
+                }
+                // move cursor to left
+                else
+                {
+                    if (highlightStartIndex == highlightEndIndex)
+                    {
+                        CursorPosition--;
+                    } 
+                    else
+                    {
+                        CursorPosition = highlightStartIndex; 
+                    }
+                    cursorBlinkTimer.Reset();
+                    showCursor = true;
+
+                    keyLocker.LockKey(Keys.Left);
+                    keyLocker.UnlockKey(Keys.Right);
+                    cursorChangeTimer.SetWaitTime(100);
+
+                    highlightCursorIndex = CursorPosition;
+                    highlightStartIndex = CursorPosition;
+                    highlightEndIndex = CursorPosition;
+                    disableCursor = false;
+                    isMouseDrag = false;
+                }
             }
-            else if (keyboardState.IsKeyDown(Keys.Right) && CursorPosition < Text.Length && !keyLocker.IsKeyLocked(Keys.Right))
+            // if right is pressed
+            else if (keyboardState.IsKeyDown(Keys.Right) && !keyLocker.IsKeyLocked(Keys.Right))
             {
-                CursorPosition++;
-                cursorBlinkTimer.Reset();
-                showCursor = true;
+                // if shift key is also held, highlight
+                if (keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift))
+                {
+                    if (CursorPosition < Text.Length)
+                    {
+                        CursorPosition++;
+                        isMouseDrag = true;
+                    }
+                    if (CursorPosition > highlightCursorIndex)
+                    {
+                        highlightEndIndex = CursorPosition;
+                    }
+                    else if (CursorPosition < highlightCursorIndex)
+                    {
+                        highlightStartIndex = CursorPosition;
+                    }
+                    else
+                    {
+                        highlightStartIndex = CursorPosition;
+                        highlightEndIndex = CursorPosition;
+                    }
+                    disableCursor = highlightStartIndex != highlightEndIndex;
+                    if (!disableCursor)
+                    {
+                        cursorChangeTimer.SetWaitTime(100);
+                        showCursor = true;
+                    }
 
-                keyLocker.LockKey(Keys.Right);
-                keyLocker.UnlockKey(Keys.Left);
-                cursorChangeTimer.SetWaitTime(100);
+                    keyLocker.LockKey(Keys.Right);
+                    keyLocker.UnlockKey(Keys.Left);
+                    cursorChangeTimer.SetWaitTime(100);
+                }
+                else
+                {
+                    if (highlightStartIndex == highlightEndIndex)
+                    {
+                        CursorPosition++;
+                    }
+                    else
+                    {
+                        CursorPosition = highlightEndIndex;
+                    }
+                    cursorBlinkTimer.Reset();
+                    showCursor = true;
+
+                    keyLocker.LockKey(Keys.Right);
+                    keyLocker.UnlockKey(Keys.Left);
+                    cursorChangeTimer.SetWaitTime(100);
+
+                    highlightCursorIndex = CursorPosition;
+                    highlightStartIndex = CursorPosition;
+                    highlightEndIndex = CursorPosition;
+                    disableCursor = false;
+                    isMouseDrag = false;
+                }
             }
 
             // ctrl c, ctrl v
@@ -493,6 +592,12 @@ namespace GameEngineTest.Components
                             {
                                 ScrollIndex--;
                             }
+
+                            highlightCursorIndex = CursorPosition;
+                            highlightStartIndex = CursorPosition;
+                            highlightEndIndex = CursorPosition;
+                            disableCursor = false;
+                            isMouseDrag = false;
                         }
                     }
                     else
@@ -542,6 +647,12 @@ namespace GameEngineTest.Components
                     CursorPosition++;
                     cursorBlinkTimer.Reset();
                     showCursor = true;
+
+                    highlightCursorIndex = CursorPosition;
+                    highlightStartIndex = CursorPosition;
+                    highlightEndIndex = CursorPosition;
+                    disableCursor = false;
+                    isMouseDrag = false;
                 }
             }
         }
