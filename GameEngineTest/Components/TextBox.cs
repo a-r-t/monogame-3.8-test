@@ -38,7 +38,8 @@ namespace GameEngineTest.Components
         protected int highlightEndIndex;
         protected bool disableCursor = false;
         protected Stopwatch clickTimer;
-        private bool clickOnce = true;
+        private bool clickOnce = false;
+        private bool doubleClicked = false;
         
         private int cursorPosition = 0;
         protected int CursorPosition
@@ -189,7 +190,7 @@ namespace GameEngineTest.Components
 
             CursorColor = Color.Black;
             BackColor = Color.White;
-            BorderColor = Color.Black;
+            BorderColor = Color.Crimson;
             TextColor = Color.Black;
             HighlightColor = new Color(50, 151, 253); // blue
             HighlightTextColor = Color.White;
@@ -226,10 +227,11 @@ namespace GameEngineTest.Components
             else if (mouseState.LeftButton == ButtonState.Released)
             {
                 isMouseDrag = false;
-                if (clickTimer.IsTimeUp())
-                {
-                    clickOnce = false;
-                }
+                doubleClicked = false;
+            }
+            if (clickOnce && clickTimer.IsTimeUp())
+            {
+                clickOnce = false;
             }
 
             if (isMouseDrag && cursorChangeTimer.IsTimeUp())
@@ -277,10 +279,11 @@ namespace GameEngineTest.Components
             // if double click without moving mouse, select all text
             if (clickOnce && !clickTimer.IsTimeUp() && Math.Min(mouseLocationOffset.Round(), Text.Length) == CursorPosition)
             {
+                doubleClicked = true;
                 HighlightAllText();
             }
             // if single click, move cursor
-            else if (StartLocationX + (calculatedCursorIndex * spacingBetweenLetters) - ScrollOffset <= EndLocationX)
+            else if (StartLocationX + (calculatedCursorIndex * spacingBetweenLetters) - ScrollOffset <= EndLocationX && !doubleClicked)
             {
                 CursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
                 cursorBlinkTimer.Reset();
@@ -556,14 +559,18 @@ namespace GameEngineTest.Components
         protected virtual void UpdateTextScroll()
         {
             // if cursor position is off screen
-            while(StartLocationX + CursorOffset - ScrollOffset > EndLocationX)
-            {
-                ScrollIndex++;
+            if (StartLocationX + CursorOffset - ScrollOffset > EndLocationX) {
+                do
+                {
+                    ScrollIndex++;
+                } while (StartLocationX + CursorOffset - ScrollOffset > EndLocationX);
             }
-
-            while(StartLocationX + CursorOffset - ScrollOffset < StartLocationX)
+            else if (StartLocationX + CursorOffset - ScrollOffset < StartLocationX)
             {
-                ScrollIndex--;
+                do
+                {
+                    ScrollIndex--;
+                } while (StartLocationX + CursorOffset - ScrollOffset < StartLocationX);
             }
         }
 
@@ -581,7 +588,12 @@ namespace GameEngineTest.Components
         {
             box.Draw(graphicsHandler);
 
-            graphicsHandler.SetScissorRectangle(Bounds);
+            graphicsHandler.SetScissorRectangle(new Rectangle(
+                (int)box.X + box.BorderThickness,
+                (int)box.Y + box.BorderThickness,
+                box.Width - box.BorderThickness,
+                box.Height - box.BorderThickness
+            ));
 
             // highlighting
             graphicsHandler.DrawFilledRectangle(new Rectangle(StartLocationX + (highlightStartIndex * spacingBetweenLetters) - ScrollOffset, StartLocationY, ((highlightEndIndex - highlightStartIndex)  * spacingBetweenLetters), EndLocationY - StartLocationY), HighlightColor);
@@ -601,14 +613,14 @@ namespace GameEngineTest.Components
             {
                 int highlightX = StartLocationX + (highlightStartIndex * spacingBetweenLetters) - ScrollOffset;
                 int highlightWidth = ((highlightEndIndex - highlightStartIndex) * spacingBetweenLetters);
-                if (highlightX + highlightWidth > box.X + box.Width)
+                if (highlightX + highlightWidth > box.X + box.Width - box.BorderThickness)
                 {
                     highlightWidth = (int)box.X + box.Width - highlightX;
                 }
-                if (highlightX < box.X)
+                if (highlightX < (int)box.X + box.BorderThickness)
                 {
-                    int difference = (int)box.X - highlightX;
-                    highlightX = (int)box.X;
+                    int difference = (int)box.X + box.BorderThickness - highlightX;
+                    highlightX = (int)box.X + box.BorderThickness;
                     highlightWidth -= difference;
                 }
                 graphicsHandler.SetScissorRectangle(new Rectangle(highlightX, StartLocationY, highlightWidth, EndLocationY - StartLocationY));
