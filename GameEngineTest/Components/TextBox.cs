@@ -131,7 +131,7 @@ namespace GameEngineTest.Components
         {
             get
             {
-                return CursorPosition * spacingBetweenLetters;
+                return (CursorPosition * spacingBetweenLetters) + ((int)font.Spacing * CursorPosition);
             }
         }
 
@@ -200,9 +200,14 @@ namespace GameEngineTest.Components
             Text = defaultText;
             font = spriteFont;
 
+            if (spriteFont.Spacing < 1)
+            {
+                spriteFont.Spacing = 1;
+            }
+
             CursorColor = Color.Black;
             BackColor = Color.White;
-            BorderColor = Color.Crimson;
+            BorderColor = Color.Black;
             TextColor = Color.Black;
             HighlightColor = new Color(50, 151, 253); // blue
             HighlightTextColor = Color.White;
