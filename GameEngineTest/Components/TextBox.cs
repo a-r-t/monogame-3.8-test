@@ -200,6 +200,7 @@ namespace GameEngineTest.Components
             Text = defaultText;
             font = spriteFont;
 
+            // make sure spacing between each letter is at least 1 so the cursor can fit inbetween
             if (spriteFont.Spacing < 1)
             {
                 spriteFont.Spacing = 1;
@@ -613,7 +614,9 @@ namespace GameEngineTest.Components
             ));
 
             // highlighting
-            graphicsHandler.DrawFilledRectangle(new Rectangle(StartLocationX + (highlightStartIndex * spacingBetweenLetters) - ScrollOffset, StartLocationY, ((highlightEndIndex - highlightStartIndex)  * spacingBetweenLetters), EndLocationY - StartLocationY), HighlightColor);
+            int highlightX = StartLocationX + (highlightStartIndex * spacingBetweenLetters) - ScrollOffset + (highlightStartIndex * (int)font.Spacing);
+            int highlightWidth = ((highlightEndIndex - highlightStartIndex) * spacingBetweenLetters) + ((highlightEndIndex - highlightStartIndex) * (int)font.Spacing);
+            graphicsHandler.DrawFilledRectangle(new Rectangle(highlightX, StartLocationY, highlightWidth, EndLocationY - StartLocationY), HighlightColor);
 
             // text
             graphicsHandler.DrawString(font, Text, new Vector2(StartLocationX - ScrollOffset, box.Y), color: TextColor);
@@ -628,19 +631,19 @@ namespace GameEngineTest.Components
 
             if (highlightStartIndex != highlightEndIndex)
             {
-                int highlightX = StartLocationX + (highlightStartIndex * spacingBetweenLetters) - ScrollOffset;
-                int highlightWidth = ((highlightEndIndex - highlightStartIndex) * spacingBetweenLetters);
-                if (highlightX + highlightWidth > box.X + box.Width - box.BorderThickness)
+                int highlightTextX = StartLocationX + (highlightStartIndex * spacingBetweenLetters) - ScrollOffset + (highlightStartIndex * (int)font.Spacing);
+                int highlightTextWidth = ((highlightEndIndex - highlightStartIndex) * spacingBetweenLetters) + ((highlightEndIndex - highlightStartIndex) * (int)font.Spacing);
+                if (highlightTextX + highlightTextWidth > box.X + box.Width - box.BorderThickness)
                 {
-                    highlightWidth = (int)box.X + box.Width - highlightX;
+                    highlightTextWidth = (int)box.X + box.Width - highlightTextX;
                 }
-                if (highlightX < (int)box.X + box.BorderThickness)
+                if (highlightTextX < (int)box.X + box.BorderThickness)
                 {
-                    int difference = (int)box.X + box.BorderThickness - highlightX;
-                    highlightX = (int)box.X + box.BorderThickness;
-                    highlightWidth -= difference;
+                    int difference = (int)box.X + box.BorderThickness - highlightTextX;
+                    highlightTextX = (int)box.X + box.BorderThickness;
+                    highlightTextWidth -= difference;
                 }
-                graphicsHandler.SetScissorRectangle(new Rectangle(highlightX, StartLocationY, highlightWidth, EndLocationY - StartLocationY));
+                graphicsHandler.SetScissorRectangle(new Rectangle(highlightTextX, StartLocationY, highlightTextWidth, EndLocationY - StartLocationY));
 
                 graphicsHandler.DrawString(font, Text, new Vector2(StartLocationX - ScrollOffset, box.Y), color: HighlightTextColor);
 
