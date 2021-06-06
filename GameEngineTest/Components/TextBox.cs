@@ -30,7 +30,7 @@ namespace GameEngineTest.Components
         protected int spacingBetweenLetters;
         protected Stopwatch cursorChangeTimer;
         protected KeyLocker keyLocker = new KeyLocker();
-        protected bool isMouseDrag;
+        protected bool highlightMode;
         protected int previousMouseX;
         protected Vector2 previousMouseLocation;
         protected int highlightCursorIndex;
@@ -151,7 +151,6 @@ namespace GameEngineTest.Components
             }
         }
 
-
         public Color CursorColor { get; set; }
         public Color TextColor { get; set; }
         public Color HighlightColor { get; set; }
@@ -188,6 +187,23 @@ namespace GameEngineTest.Components
             set
             {
                 box.BorderThickness = value;
+            }
+        }
+
+        // space between letters in font
+        public int FontSpacing
+        {
+            get
+            {
+                return (int)font.Spacing;
+            }
+            set
+            {
+                font.Spacing = value;
+                if (font.Spacing < 1)
+                {
+                    font.Spacing = 1;
+                }
             }
         }
 
@@ -228,6 +244,7 @@ namespace GameEngineTest.Components
             clickTimer.SetWaitTime(SystemInformation.DoubleClickTime);
         }
 
+        // destructor to prevent memory leak
         ~TextBox()
         {
             GameLoop.GameWindow.TextInput -= Window_TextInput;
@@ -238,21 +255,21 @@ namespace GameEngineTest.Components
             MouseState mouseState = Mouse.GetState();
             Vector2 mouseLocation = new Vector2(mouseState.X, mouseState.Y);
 
-            if (mouseState.LeftButton == ButtonState.Pressed && box.ContainsPoint(mouseLocation) && cursorChangeTimer.IsTimeUp() && !isMouseDrag)
+            // mouse events
+            if (mouseState.LeftButton == ButtonState.Pressed && box.ContainsPoint(mouseLocation) && !highlightMode)
             {
                 OnMouseClick(mouseState, mouseLocation);
             }
             else if (mouseState.LeftButton == ButtonState.Released)
             {
-                isMouseDrag = false;
+                highlightMode = false;
                 doubleClicked = false;
             }
             if (clickOnce && clickTimer.IsTimeUp())
             {
                 clickOnce = false;
             }
-
-            if (isMouseDrag && cursorChangeTimer.IsTimeUp())
+            if (highlightMode && cursorChangeTimer.IsTimeUp())
             {
                 if (mouseState.X != previousMouseX)
                 {
@@ -260,21 +277,21 @@ namespace GameEngineTest.Components
                 }
             }
 
+            // keyboard events
             KeyboardState keyboardState = Keyboard.GetState();
             OnKeyPress(keyboardState);
             
+            // state changes
             if (cursorBlinkTimer.IsTimeUp())
             {
                 showCursor = !showCursor;
                 cursorBlinkTimer.Reset();
             }
-
             if (cursorChangeTimer.IsTimeUp())
             {
                 keyLocker.UnlockKey(Keys.Left);
                 keyLocker.UnlockKey(Keys.Right);
             }
-
             if (keyboardState.IsKeyUp(Keys.C))
             {
                 keyLocker.UnlockKey(Keys.C);
@@ -284,6 +301,7 @@ namespace GameEngineTest.Components
                 keyLocker.UnlockKey(Keys.V);
             }
 
+            // text scrolling (if cursor is moved out of view, text needs to scroll)
             UpdateTextScroll();
 
             previousMouseLocation = new Vector2(mouseState.X, mouseState.Y);
@@ -309,7 +327,7 @@ namespace GameEngineTest.Components
 
                 cursorChangeTimer.SetWaitTime(100);
 
-                isMouseDrag = true;
+                highlightMode = true;
                 previousMouseX = mouseState.X;
 
                 highlightCursorIndex = CursorPosition;
@@ -329,7 +347,6 @@ namespace GameEngineTest.Components
             {
                 if (CursorPosition > 0)
                 {
-
                     float mouseLocationOffset = (mouseLocation.X - StartLocationX + ScrollOffset) / spacingBetweenLetters;
                     CursorPosition = Math.Min(mouseLocationOffset.Round(), Text.Length);
                 }
@@ -390,7 +407,7 @@ namespace GameEngineTest.Components
                     if (CursorPosition > 0)
                     {
                         CursorPosition--;
-                        isMouseDrag = true;
+                        highlightMode = true;
                     }
                     if (CursorPosition < highlightCursorIndex)
                     {
@@ -438,7 +455,7 @@ namespace GameEngineTest.Components
                     highlightStartIndex = CursorPosition;
                     highlightEndIndex = CursorPosition;
                     disableCursor = false;
-                    isMouseDrag = false;
+                    highlightMode = false;
                 }
             }
             // if right is pressed
@@ -450,7 +467,7 @@ namespace GameEngineTest.Components
                     if (CursorPosition < Text.Length)
                     {
                         CursorPosition++;
-                        isMouseDrag = true;
+                        highlightMode = true;
                     }
                     if (CursorPosition > highlightCursorIndex)
                     {
@@ -476,6 +493,7 @@ namespace GameEngineTest.Components
                     keyLocker.UnlockKey(Keys.Left);
                     cursorChangeTimer.SetWaitTime(100);
                 }
+                // move cursor to right
                 else
                 {
                     if (highlightStartIndex == highlightEndIndex)
@@ -497,7 +515,7 @@ namespace GameEngineTest.Components
                     highlightStartIndex = CursorPosition;
                     highlightEndIndex = CursorPosition;
                     disableCursor = false;
-                    isMouseDrag = false;
+                    highlightMode = false;
                 }
             }
 
@@ -559,7 +577,7 @@ namespace GameEngineTest.Components
                         highlightCursorIndex = CursorPosition;
                         highlightStartIndex = CursorPosition;
                         highlightEndIndex = CursorPosition;
-                        isMouseDrag = false;
+                        highlightMode = false;
                         disableCursor = false;
                         cursorBlinkTimer.Reset();
                         showCursor = true;
@@ -604,8 +622,12 @@ namespace GameEngineTest.Components
 
         public virtual void Draw(GraphicsHandler graphicsHandler)
         {
+            // textbox itself (includes border)
             box.Draw(graphicsHandler);
 
+            // setting scissor rectangle to the size of the whitespace in textbox
+            // anything attempting to be drawn outside of scissor rectangle will be cut off
+            // necessary to cut off text and such, since otherwise there's no way to only draw a partial letter of a spritefont
             graphicsHandler.SetScissorRectangle(new Rectangle(
                 (int)box.X + box.BorderThickness,
                 (int)box.Y + box.BorderThickness,
@@ -629,6 +651,7 @@ namespace GameEngineTest.Components
 
             graphicsHandler.RemoveScissorRectangle();
 
+            // if text is highlighted, the text needs to be redrawn to be the highlight color
             if (highlightStartIndex != highlightEndIndex)
             {
                 int highlightTextX = StartLocationX + (highlightStartIndex * spacingBetweenLetters) - ScrollOffset + (highlightStartIndex * (int)font.Spacing);
@@ -643,8 +666,11 @@ namespace GameEngineTest.Components
                     highlightTextX = (int)box.X + box.BorderThickness;
                     highlightTextWidth -= difference;
                 }
+
+                // redraw the spritefont text only where the text is highlighted
                 graphicsHandler.SetScissorRectangle(new Rectangle(highlightTextX, StartLocationY, highlightTextWidth, EndLocationY - StartLocationY));
 
+                // draw text in highlighted color
                 graphicsHandler.DrawString(font, Text, new Vector2(StartLocationX - ScrollOffset, box.Y), color: HighlightTextColor);
 
                 graphicsHandler.RemoveScissorRectangle();
@@ -683,7 +709,7 @@ namespace GameEngineTest.Components
                             highlightStartIndex = CursorPosition;
                             highlightEndIndex = CursorPosition;
                             disableCursor = false;
-                            isMouseDrag = false;
+                            highlightMode = false;
                         }
                     }
                     else
@@ -710,7 +736,7 @@ namespace GameEngineTest.Components
                         highlightCursorIndex = CursorPosition;
                         highlightStartIndex = CursorPosition;
                         highlightEndIndex = CursorPosition;
-                        isMouseDrag = false;
+                        highlightMode = false;
                         disableCursor = false;
                         cursorBlinkTimer.Reset();
                         showCursor = true;
@@ -740,7 +766,7 @@ namespace GameEngineTest.Components
                         highlightStartIndex = CursorPosition;
                         highlightEndIndex = CursorPosition;
                         disableCursor = false;
-                        isMouseDrag = false;
+                        highlightMode = false;
                     }
                     else
                     {
@@ -766,7 +792,7 @@ namespace GameEngineTest.Components
                         highlightCursorIndex = CursorPosition;
                         highlightStartIndex = CursorPosition;
                         highlightEndIndex = CursorPosition;
-                        isMouseDrag = false;
+                        highlightMode = false;
                         disableCursor = false;
                         cursorBlinkTimer.Reset();
                         showCursor = true;
