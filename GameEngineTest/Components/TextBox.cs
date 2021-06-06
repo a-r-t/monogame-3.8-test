@@ -179,12 +179,24 @@ namespace GameEngineTest.Components
             }
         }
 
-        public TextBox(int x, int y, int width, SpriteFont spriteFont, string defaultText = "", int characterLimit = -1)
+        public int BorderThickness
         {
-            box = new RectangleGraphic(x, y, width, spriteFont.LineSpacing);
+            get
+            {
+                return box.BorderThickness;
+            }
+            set
+            {
+                box.BorderThickness = value;
+            }
+        }
+
+        public TextBox(int x, int y, int width, SpriteFont spriteFont, string defaultText = "", int characterLimit = -1, int borderThickness = 2)
+        {
+            box = new RectangleGraphic(x, y, width, spriteFont.LineSpacing + (borderThickness * 2));
             box.Color = Color.White;
             box.BorderColor = Color.Black;
-            box.BorderThickness = 2;
+            box.BorderThickness = borderThickness;
             Text = defaultText;
             font = spriteFont;
 

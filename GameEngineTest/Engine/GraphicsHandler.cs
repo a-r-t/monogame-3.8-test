@@ -23,13 +23,7 @@ namespace GameEngineTest.Engine
 
         public void DrawRectangle(int x, int y, int width, int height, Color color, int borderThickness = 1)
         {
-            Texture2D rectangleTexture = new Texture2D(GraphicsDevice, 1, 1);
-            rectangleTexture.SetData(new[] { Color.White });
-
-            SpriteBatch.Draw(rectangleTexture, new Rectangle(x, y, borderThickness, height), color);
-            SpriteBatch.Draw(rectangleTexture, new Rectangle(x, y, width + borderThickness, borderThickness), color);
-            SpriteBatch.Draw(rectangleTexture, new Rectangle(x + width, y, borderThickness, height + borderThickness), color);
-            SpriteBatch.Draw(rectangleTexture, new Rectangle(x, y + height, width + borderThickness, borderThickness), color);
+            DrawRectangle(new Rectangle(x, y, width, height), color, borderThickness);
         }
 
         public void DrawRectangle(Rectangle rectangle, Color color, int borderThickness = 1)
@@ -37,10 +31,17 @@ namespace GameEngineTest.Engine
             Texture2D rectangleTexture = new Texture2D(GraphicsDevice, 1, 1);
             rectangleTexture.SetData(new[] { Color.White });
 
+            // vertical left
             SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X, rectangle.Y, borderThickness, rectangle.Height), color);
+            
+            // horizontal top
             SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X, rectangle.Y, rectangle.Width + borderThickness, borderThickness), color);
-            SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, borderThickness, rectangle.Height + borderThickness), color);
-            SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Width + borderThickness, borderThickness), color);
+            
+            // vertical right
+            SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, borderThickness, rectangle.Height - borderThickness), color);
+            
+            // horizontal bottom
+            SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X, rectangle.Y + rectangle.Height - borderThickness, rectangle.Width + borderThickness, borderThickness), color);
         }
 
         public void DrawFilledRectangle(Rectangle rectangle, Color color)
@@ -70,17 +71,25 @@ namespace GameEngineTest.Engine
             rectangleTexture.SetData(new[] { Color.White });
 
             SpriteBatch.Draw(rectangleTexture, rectangle, color);
+
+            // vertical left
             SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X, rectangle.Y, borderThickness, rectangle.Height), (Color)borderColor);
+
+            // horizontal top
             SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X, rectangle.Y, rectangle.Width + borderThickness, borderThickness), (Color)borderColor);
-            SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, borderThickness, rectangle.Height + borderThickness), (Color)borderColor);
-            SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Width + borderThickness, borderThickness), (Color)borderColor);
+
+            // vertical right
+            SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, borderThickness, rectangle.Height - borderThickness), (Color)borderColor);
+
+            // horizontal bottom
+            SpriteBatch.Draw(rectangleTexture, new Rectangle(rectangle.X, rectangle.Y + rectangle.Height - borderThickness, rectangle.Width + borderThickness, borderThickness), (Color)borderColor);
         }
 
         public void DrawLine(Vector2 begin, Vector2 end, Color color, int width = 1)
         {
             Texture2D rectangleTexture = new Texture2D(GraphicsDevice, 1, 1);
             rectangleTexture.SetData(new[] { Color.White });
-            Rectangle r = new Rectangle((int)begin.X, (int)begin.Y, (int)(end - begin).Length() + width, width);
+            Rectangle r = new Rectangle((int)begin.X, (int)begin.Y, (int)(end - begin).Length(), width);
             Vector2 v = Vector2.Normalize(begin - end);
             float angle = (float)Math.Acos(Vector2.Dot(v, -Vector2.UnitX));
             if (begin.Y > end.Y) angle = MathHelper.TwoPi - angle;
