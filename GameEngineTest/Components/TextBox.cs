@@ -120,10 +120,6 @@ namespace GameEngineTest.Components
                 {
                     scrollIndex = 0;
                 }
-                else if (scrollIndex > MaxScrollIndex)
-                {
-                    scrollIndex = MaxScrollIndex;
-                }
             }
         }
 
@@ -274,6 +270,22 @@ namespace GameEngineTest.Components
             }
         }
 
+        protected bool IsCharacterLimitSet
+        {
+            get
+            {
+                return CharacterLimit > -1;
+            }
+        }
+
+        protected bool IsAtCharacterLimit
+        {
+            get
+            {
+                return IsCharacterLimitSet && Text.Length >= CharacterLimit;
+            }
+        }
+
         public TextBox(int x, int y, int width, SpriteFont spriteFont, string defaultText = "", int characterLimit = -1, int borderThickness = 2)
         {
             box = new RectangleGraphic(x, y, width, spriteFont.LineSpacing + (borderThickness * 2));
@@ -287,6 +299,11 @@ namespace GameEngineTest.Components
             if (spriteFont.Spacing < 1)
             {
                 spriteFont.Spacing = 1;
+            }
+
+            if (spriteFont.DefaultCharacter == null)
+            {
+                spriteFont.DefaultCharacter = '?';
             }
 
             CursorColor = Color.Black;
@@ -583,9 +600,17 @@ namespace GameEngineTest.Components
                 {
                     keyLocker.LockKey(Keys.V);
                     string pastedText = Clipboard.GetText();
+
                     // append/insert (no highlighting)
-                    if (!IsTextHighlighted)
+                    if (!IsTextHighlighted && !IsAtCharacterLimit)
                     {
+                        // if pasted string would make text go past character limit, cut off a piece from pasted text to stay at limit
+                        if (IsCharacterLimitSet && Text.Length + pastedText.Length > CharacterLimit)
+                        {
+                            int difference = Text.Length + pastedText.Length - CharacterLimit;
+                            pastedText = pastedText.Substring(0, difference);
+                        }
+
                         if (CursorPosition == Text.Length)
                         {
                             Text += pastedText;
@@ -599,11 +624,17 @@ namespace GameEngineTest.Components
                             Text = Text.SubstringByIndexes(0, CursorPosition) + pastedText + Text.SubstringByIndexes(CursorPosition, Text.Length);
                         }
                         CursorPosition += pastedText.Length;
-                        ResetCursorBlinkTimer();
                     }
                     // replace highlighted text
                     else
                     {
+                        // if pasted string would make text go past character limit, cut off a piece from pasted text to stay at limit
+                        if (IsCharacterLimitSet && Text.Length - HighlightedText.Length + pastedText.Length > CharacterLimit)
+                        {
+                            int difference = Text.Length - HighlightedText.Length + pastedText.Length - CharacterLimit;
+                            pastedText = pastedText.Substring(0, difference);
+                        }
+
                         if (HighlightStartIndex == 0 && HighlightEndIndex == Text.Length)
                         {
                             Text = pastedText;
@@ -623,8 +654,8 @@ namespace GameEngineTest.Components
                         CursorPosition = HighlightEndIndex;
                         ResetHighlightIndexes();
                         highlightMode = false;
-                        ResetCursorBlinkTimer();
                     }
+                    ResetCursorBlinkTimer();
                 }
                 // ctrl + a (select all text)
                 else if (keyboardState.IsKeyDown(Keys.A))
@@ -732,106 +763,114 @@ namespace GameEngineTest.Components
             }
         }
 
+        private bool IsControlKeyPressed()
+        {
+            KeyboardState keyboardState = Keyboard.GetState();
+            return keyboardState.IsKeyDown(Keys.LeftControl) || keyboardState.IsKeyDown(Keys.RightControl);
+        }
+
         // event for handling keyboard input from OS
         private void Window_TextInput(object sender, TextInputEventArgs e)
         {
-            KeyboardState keyboardState = Keyboard.GetState();
-            if (!keyboardState.IsKeyDown(Keys.LeftControl) && !keyboardState.IsKeyDown(Keys.RightControl)) // prevents ctrl + c and stuff from breaking since draw string cannot draw those weird characters
+            if (!IsControlKeyPressed()) // prevents ctrl + c and stuff from breaking since draw string cannot draw those weird characters
             {
-                if (e.Key == Keys.Back)
+                // if there is room for more text or backspace input is received, process input
+                if (!IsAtCharacterLimit || e.Key == Keys.Back)
                 {
-                    if (!IsTextHighlighted)
+                    HandleTextInput(e);
+                    ResetCursorBlinkTimer();
+                    ResetHighlightIndexes();
+                    highlightMode = false;
+                }
+            }
+        }
+
+        private void HandleTextInput(TextInputEventArgs e)
+        {
+            if (e.Key == Keys.Back)
+            {
+                HandleBackSpaceInput();
+            }
+            else
+            {
+                if (!IsTextHighlighted)
+                {
+                    if (CursorPosition == Text.Length)
                     {
-                        if (Text.Length > 0 && CursorPosition > 0)
-                        {
-                            if (CursorPosition == Text.Length)
-                            {
-                                Text = Text.SubstringByIndexes(0, Text.Length - 1);
-                            }
-                            else
-                            {
-                                Text = Text.SubstringByIndexes(0, CursorPosition - 1) + Text.SubstringByIndexes(CursorPosition, Text.Length);
-                            }
-                            CursorPosition--;
-                            ResetCursorBlinkTimer();
-                            ScrollIndex--;
-                            ResetHighlightIndexes();
-                            highlightMode = false;
-                        }
+                        Text += e.Character;
+                    }
+                    else if (CursorPosition == 0)
+                    {
+                        Text = e.Character + Text;
                     }
                     else
                     {
-                        if (HighlightStartIndex == 0 && HighlightEndIndex == Text.Length)
-                        {
-                            Text = "";
-                        }
-                        else if (HighlightStartIndex == 0)
-                        {
-                            Text = Text.Substring(HighlightEndIndex);
-                        }
-                        else if (HighlightEndIndex == Text.Length)
-                        {
-                            Text = Text.Substring(0, HighlightStartIndex);
-                        }
-                        else
-                        {
-                            Text = Text.SubstringByIndexes(0, HighlightStartIndex) + Text.SubstringByIndexes(HighlightEndIndex, Text.Length);
-                        }
-
-                        ScrollIndex -= HighlightEndIndex - HighlightStartIndex;
-                        CursorPosition = HighlightStartIndex;
-                        ResetHighlightIndexes();
-                        highlightMode = false;
-                        ResetCursorBlinkTimer();
+                        Text = Text.SubstringByIndexes(0, CursorPosition) + e.Character + Text.SubstringByIndexes(CursorPosition, Text.Length);
                     }
+                    CursorPosition++;
                 }
-                else if (CharacterLimit < 0 || Text.Length < CharacterLimit)
+                else
                 {
-                    if (!IsTextHighlighted)
+                    if (HighlightStartIndex == 0 && HighlightEndIndex == Text.Length)
                     {
-                        if (CursorPosition == Text.Length)
-                        {
-                            Text += e.Character;
-                        }
-                        else if (CursorPosition == 0)
-                        {
-                            Text = e.Character + Text;
-                        }
-                        else
-                        {
-                            Text = Text.SubstringByIndexes(0, CursorPosition) + e.Character + Text.SubstringByIndexes(CursorPosition, Text.Length);
-                        }
-                        CursorPosition++;
-                        ResetCursorBlinkTimer();
-                        ResetHighlightIndexes();
-                        highlightMode = false;
+                        Text = e.Character.ToString();
+                    }
+                    else if (HighlightStartIndex == 0)
+                    {
+                        Text = e.Character + Text.Substring(HighlightEndIndex);
+                    }
+                    else if (HighlightEndIndex == Text.Length)
+                    {
+                        Text = Text.Substring(0, HighlightStartIndex) + e.Character;
                     }
                     else
                     {
-                        if (HighlightStartIndex == 0 && HighlightEndIndex == Text.Length)
-                        {
-                            Text = e.Character.ToString();
-                        }
-                        else if (HighlightStartIndex == 0)
-                        {
-                            Text = e.Character + Text.Substring(HighlightEndIndex);
-                        }
-                        else if (HighlightEndIndex == Text.Length)
-                        {
-                            Text = Text.Substring(0, HighlightStartIndex) + e.Character;
-                        }
-                        else
-                        {
-                            Text = Text.SubstringByIndexes(0, HighlightStartIndex) + e.Character + Text.SubstringByIndexes(HighlightEndIndex, Text.Length);
-                        }
-
-                        ScrollIndex -= HighlightEndIndex - HighlightStartIndex;
-                        CursorPosition = HighlightEndIndex;
-                        ResetHighlightIndexes();
-                        highlightMode = false;
-                        ResetCursorBlinkTimer();
+                        Text = Text.SubstringByIndexes(0, HighlightStartIndex) + e.Character + Text.SubstringByIndexes(HighlightEndIndex, Text.Length);
                     }
+                    CursorPosition = HighlightEndIndex;
                 }
+            }
+        }
+
+        private void HandleBackSpaceInput()
+        {
+            if (!IsTextHighlighted)
+            {
+                if (Text.Length > 0 && CursorPosition > 0)
+                {
+                    if (CursorPosition == Text.Length)
+                    {
+                        Text = Text.SubstringByIndexes(0, Text.Length - 1);
+                    }
+                    else
+                    {
+                        Text = Text.SubstringByIndexes(0, CursorPosition - 1) + Text.SubstringByIndexes(CursorPosition, Text.Length);
+                    }
+                    CursorPosition--;
+                    ScrollIndex--;
+                }
+            }
+            else
+            {
+                if (HighlightStartIndex == 0 && HighlightEndIndex == Text.Length)
+                {
+                    Text = "";
+                }
+                else if (HighlightStartIndex == 0)
+                {
+                    Text = Text.Substring(HighlightEndIndex);
+                }
+                else if (HighlightEndIndex == Text.Length)
+                {
+                    Text = Text.Substring(0, HighlightStartIndex);
+                }
+                else
+                {
+                    Text = Text.SubstringByIndexes(0, HighlightStartIndex) + Text.SubstringByIndexes(HighlightEndIndex, Text.Length);
+                }
+
+                CursorPosition = HighlightStartIndex;
+                ScrollIndex -= HighlightEndIndex - HighlightStartIndex;
             }
         }
     }
