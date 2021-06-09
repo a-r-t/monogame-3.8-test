@@ -1,20 +1,15 @@
 ﻿using GameEngineTest.Engine;
 using GameEngineTest.Extensions;
-using GameEngineTest.FontGraphics;
 using GameEngineTest.GameObjects;
 using GameEngineTest.Utils;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 using Stopwatch = GameEngineTest.Utils.Stopwatch;
 using System.Windows.Forms;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
-using System.Text.RegularExpressions;
 
 namespace GameEngineTest.Components
 {
