@@ -127,7 +127,7 @@ namespace GameEngineTest.Components
         {
             get
             {
-                return ScrollIndex * fontCharLength;
+                return ScrollIndex * fontCharLength + ((int)font.Spacing * ScrollIndex);
             }
         }
 
