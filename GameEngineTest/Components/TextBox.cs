@@ -349,10 +349,12 @@ namespace GameEngineTest.Components
                 highlightMode = false;
                 doubleClicked = false;
             }
+
             if (singleClicked && clickTimer.IsTimeUp())
             {
                 singleClicked = false;
             }
+
             if (highlightMode && cursorChangeTimer.IsTimeUp())
             {
                 if (mouseState.X != (int)previousMouseLocation.X)
@@ -420,8 +422,10 @@ namespace GameEngineTest.Components
 
         protected virtual void OnMouseDrag(MouseState mouseState, Vector2 mouseLocation)
         {
+            // get direction mouse is being dragged in
             int direction = mouseState.X - (int)previousMouseLocation.X > 0 ? 1 : -1;
 
+            // mouse dragged to the left
             if (direction == -1)
             {
                 if (CursorPosition > 0)
@@ -443,6 +447,7 @@ namespace GameEngineTest.Components
                     HighlightEndIndex = CursorPosition;
                 }
             }
+            // mouse dragged to the right
             else if (direction == 1)
             {
                 if (CursorPosition < Text.Length)
@@ -477,193 +482,217 @@ namespace GameEngineTest.Components
             // if left is pressed
             if (keyboardState.IsKeyDown(Keys.Left) && !keyLocker.IsKeyLocked(Keys.Left))
             {
-                // if shift key is also held, highlight
-                if (keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift))
-                {
-                    if (CursorPosition > 0)
-                    {
-                        CursorPosition--;
-                        highlightMode = true;
-                    }
-                    if (CursorPosition < highlightCursorIndex)
-                    {
-                        HighlightStartIndex = CursorPosition;
-                    }
-                    else if (CursorPosition > highlightCursorIndex)
-                    {
-                        HighlightEndIndex = CursorPosition;
-                    }
-                    else
-                    {
-                        HighlightStartIndex = CursorPosition;
-                        HighlightEndIndex = CursorPosition;
-                    }
-                    if (!IsTextHighlighted)
-                    {
-                        cursorChangeTimer.SetWaitTime(100);
-                        showCursor = true;
-                    }
-
-                    keyLocker.LockKey(Keys.Left);
-                    keyLocker.UnlockKey(Keys.Right);
-                    cursorChangeTimer.SetWaitTime(100);
-                }
-                // move cursor to left
-                else
-                {
-                    if (!IsTextHighlighted)
-                    {
-                        CursorPosition--;
-                    } 
-                    else
-                    {
-                        CursorPosition = HighlightStartIndex;
-                    }
-                    ResetCursorBlinkTimer();
-
-                    keyLocker.LockKey(Keys.Left);
-                    keyLocker.UnlockKey(Keys.Right);
-                    cursorChangeTimer.SetWaitTime(100);
-
-                    ResetHighlightIndexes();
-                    highlightMode = false;
-                }
+                HandleLeftKeyPressed(keyboardState);
             }
             // if right is pressed
             else if (keyboardState.IsKeyDown(Keys.Right) && !keyLocker.IsKeyLocked(Keys.Right))
             {
-                // if shift key is also held, highlight
-                if (keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift))
-                {
-                    if (CursorPosition < Text.Length)
-                    {
-                        CursorPosition++;
-                        highlightMode = true;
-                    }
-                    if (CursorPosition > highlightCursorIndex)
-                    {
-                        HighlightEndIndex = CursorPosition;
-                    }
-                    else if (CursorPosition < highlightCursorIndex)
-                    {
-                        HighlightStartIndex = CursorPosition;
-                    }
-                    else
-                    {
-                        HighlightStartIndex = CursorPosition;
-                        HighlightEndIndex = CursorPosition;
-                    }
-                    if (!IsTextHighlighted)
-                    {
-                        cursorChangeTimer.SetWaitTime(100);
-                        showCursor = true;
-                    }
-
-                    keyLocker.LockKey(Keys.Right);
-                    keyLocker.UnlockKey(Keys.Left);
-                    cursorChangeTimer.SetWaitTime(100);
-                }
-                // move cursor to right
-                else
-                {
-                    if (!IsTextHighlighted)
-                    {
-                        CursorPosition++;
-                    }
-                    else
-                    {
-                        CursorPosition = HighlightEndIndex;
-                    }
-                    ResetCursorBlinkTimer();
-
-                    keyLocker.LockKey(Keys.Right);
-                    keyLocker.UnlockKey(Keys.Left);
-                    cursorChangeTimer.SetWaitTime(100);
-
-                    ResetHighlightIndexes();
-                    highlightMode = false;
-                }
+                HandleRightKeyPressed(keyboardState);
             }
 
             // ctrl c, ctrl v
             if (keyboardState.IsKeyDown(Keys.LeftControl) || keyboardState.IsKeyDown(Keys.RightControl)) {
-                if (keyboardState.IsKeyDown(Keys.C) && !keyLocker.IsKeyLocked(Keys.C))
-                {
-                    if (IsTextHighlighted)
-                    {
-                        string copiedText = Text.SubstringByIndexes(HighlightStartIndex, HighlightEndIndex);
-                        Clipboard.SetText(copiedText);
-                        keyLocker.LockKey(Keys.C);
-                    }
-                }
-                else if (keyboardState.IsKeyDown(Keys.V) && !keyLocker.IsKeyLocked(Keys.V))
-                {
-                    keyLocker.LockKey(Keys.V);
-                    string pastedText = Clipboard.GetText();
-
-                    // append/insert (no highlighting)
-                    if (!IsTextHighlighted && !IsAtCharacterLimit)
-                    {
-                        // if pasted string would make text go past character limit, cut off a piece from pasted text to stay at limit
-                        if (IsCharacterLimitSet && Text.Length + pastedText.Length > CharacterLimit)
-                        {
-                            int difference = Text.Length + pastedText.Length - CharacterLimit;
-                            pastedText = pastedText.Substring(0, difference);
-                        }
-
-                        if (CursorPosition == Text.Length)
-                        {
-                            Text += pastedText;
-                        }
-                        else if (CursorPosition == 0)
-                        {
-                            Text = pastedText + Text;
-                        }
-                        else
-                        {
-                            Text = Text.SubstringByIndexes(0, CursorPosition) + pastedText + Text.SubstringByIndexes(CursorPosition, Text.Length);
-                        }
-                        CursorPosition += pastedText.Length;
-                    }
-                    // replace highlighted text
-                    else
-                    {
-                        // if pasted string would make text go past character limit, cut off a piece from pasted text to stay at limit
-                        if (IsCharacterLimitSet && Text.Length - HighlightedText.Length + pastedText.Length > CharacterLimit)
-                        {
-                            int difference = Text.Length - HighlightedText.Length + pastedText.Length - CharacterLimit;
-                            pastedText = pastedText.Substring(0, difference);
-                        }
-
-                        if (HighlightStartIndex == 0 && HighlightEndIndex == Text.Length)
-                        {
-                            Text = pastedText;
-                        }
-                        else if (HighlightStartIndex == 0)
-                        {
-                            Text = pastedText + Text.Substring(pastedText.Length);
-                        }
-                        else if (HighlightEndIndex == Text.Length)
-                        {
-                            Text = Text.SubstringByIndexes(0, HighlightStartIndex) + pastedText;
-                        }
-                        else
-                        {
-                            Text = Text.SubstringByIndexes(0, HighlightStartIndex) + pastedText + Text.SubstringByIndexes(HighlightEndIndex, Text.Length);
-                        }
-                        CursorPosition = HighlightEndIndex;
-                        ResetHighlightIndexes();
-                        highlightMode = false;
-                    }
-                    ResetCursorBlinkTimer();
-                }
-                // ctrl + a (select all text)
-                else if (keyboardState.IsKeyDown(Keys.A))
-                {
-                    HighlightAllText();
-                }
-
+                HandleControlKeyShortcuts(keyboardState);
             }
+        }
+
+        protected void HandleLeftKeyPressed(KeyboardState keyboardState)
+        {
+            // if shift key is also held, highlight
+            if (IsShiftKeyPressed())
+            {
+                if (CursorPosition > 0)
+                {
+                    CursorPosition--;
+                    highlightMode = true;
+                }
+                if (CursorPosition < highlightCursorIndex)
+                {
+                    HighlightStartIndex = CursorPosition;
+                }
+                else if (CursorPosition > highlightCursorIndex)
+                {
+                    HighlightEndIndex = CursorPosition;
+                }
+                else
+                {
+                    HighlightStartIndex = CursorPosition;
+                    HighlightEndIndex = CursorPosition;
+                }
+                if (!IsTextHighlighted)
+                {
+                    cursorChangeTimer.SetWaitTime(100);
+                    showCursor = true;
+                }
+
+                keyLocker.LockKey(Keys.Left);
+                keyLocker.UnlockKey(Keys.Right);
+                cursorChangeTimer.SetWaitTime(100);
+            }
+            // move cursor to left
+            else
+            {
+                if (!IsTextHighlighted)
+                {
+                    CursorPosition--;
+                }
+                else
+                {
+                    CursorPosition = HighlightStartIndex;
+                }
+                ResetCursorBlinkTimer();
+
+                keyLocker.LockKey(Keys.Left);
+                keyLocker.UnlockKey(Keys.Right);
+                cursorChangeTimer.SetWaitTime(100);
+
+                ResetHighlightIndexes();
+                highlightMode = false;
+            }
+        }
+
+        protected void HandleRightKeyPressed(KeyboardState keyboardState)
+        {
+            // if shift key is also held, highlight
+            if (IsShiftKeyPressed())
+            {
+                if (CursorPosition < Text.Length)
+                {
+                    CursorPosition++;
+                    highlightMode = true;
+                }
+                if (CursorPosition > highlightCursorIndex)
+                {
+                    HighlightEndIndex = CursorPosition;
+                }
+                else if (CursorPosition < highlightCursorIndex)
+                {
+                    HighlightStartIndex = CursorPosition;
+                }
+                else
+                {
+                    HighlightStartIndex = CursorPosition;
+                    HighlightEndIndex = CursorPosition;
+                }
+                if (!IsTextHighlighted)
+                {
+                    cursorChangeTimer.SetWaitTime(100);
+                    showCursor = true;
+                }
+
+                keyLocker.LockKey(Keys.Right);
+                keyLocker.UnlockKey(Keys.Left);
+                cursorChangeTimer.SetWaitTime(100);
+            }
+            // move cursor to right
+            else
+            {
+                if (!IsTextHighlighted)
+                {
+                    CursorPosition++;
+                }
+                else
+                {
+                    CursorPosition = HighlightEndIndex;
+                }
+                ResetCursorBlinkTimer();
+
+                keyLocker.LockKey(Keys.Right);
+                keyLocker.UnlockKey(Keys.Left);
+                cursorChangeTimer.SetWaitTime(100);
+
+                ResetHighlightIndexes();
+                highlightMode = false;
+            }
+        }
+
+        protected void HandleControlKeyShortcuts(KeyboardState keyboardState)
+        {
+            if (keyboardState.IsKeyDown(Keys.C) && !keyLocker.IsKeyLocked(Keys.C))
+            {
+                CopyText();
+            }
+            else if (keyboardState.IsKeyDown(Keys.V) && !keyLocker.IsKeyLocked(Keys.V))
+            {
+                PasteText();
+            }
+            // ctrl + a (select all text)
+            else if (keyboardState.IsKeyDown(Keys.A))
+            {
+                HighlightAllText();
+            }
+        }
+
+        protected void CopyText()
+        {
+            if (IsTextHighlighted)
+            {
+                string copiedText = Text.SubstringByIndexes(HighlightStartIndex, HighlightEndIndex);
+                Clipboard.SetText(copiedText);
+                keyLocker.LockKey(Keys.C);
+            }
+        }
+
+        protected void PasteText()
+        {
+            keyLocker.LockKey(Keys.V);
+            string pastedText = Clipboard.GetText();
+
+            // append/insert (no highlighting)
+            if (!IsTextHighlighted && !IsAtCharacterLimit)
+            {
+                // if pasted string would make text go past character limit, cut off a piece from pasted text to stay at limit
+                if (IsCharacterLimitSet && Text.Length + pastedText.Length > CharacterLimit)
+                {
+                    int difference = Text.Length + pastedText.Length - CharacterLimit;
+                    pastedText = pastedText.Substring(0, difference);
+                }
+
+                if (CursorPosition == Text.Length)
+                {
+                    Text += pastedText;
+                }
+                else if (CursorPosition == 0)
+                {
+                    Text = pastedText + Text;
+                }
+                else
+                {
+                    Text = Text.SubstringByIndexes(0, CursorPosition) + pastedText + Text.SubstringByIndexes(CursorPosition, Text.Length);
+                }
+                CursorPosition += pastedText.Length;
+            }
+            // replace highlighted text
+            else
+            {
+                // if pasted string would make text go past character limit, cut off a piece from pasted text to stay at limit
+                if (IsCharacterLimitSet && Text.Length - HighlightedText.Length + pastedText.Length > CharacterLimit)
+                {
+                    int difference = Text.Length - HighlightedText.Length + pastedText.Length - CharacterLimit;
+                    pastedText = pastedText.Substring(0, difference);
+                }
+
+                if (HighlightStartIndex == 0 && HighlightEndIndex == Text.Length)
+                {
+                    Text = pastedText;
+                }
+                else if (HighlightStartIndex == 0)
+                {
+                    Text = pastedText + Text.Substring(pastedText.Length);
+                }
+                else if (HighlightEndIndex == Text.Length)
+                {
+                    Text = Text.SubstringByIndexes(0, HighlightStartIndex) + pastedText;
+                }
+                else
+                {
+                    Text = Text.SubstringByIndexes(0, HighlightStartIndex) + pastedText + Text.SubstringByIndexes(HighlightEndIndex, Text.Length);
+                }
+                CursorPosition = HighlightEndIndex;
+                ResetHighlightIndexes();
+                highlightMode = false;
+            }
+            ResetCursorBlinkTimer();
         }
 
         protected void ResetCursorBlinkTimer()
@@ -767,6 +796,12 @@ namespace GameEngineTest.Components
         {
             KeyboardState keyboardState = Keyboard.GetState();
             return keyboardState.IsKeyDown(Keys.LeftControl) || keyboardState.IsKeyDown(Keys.RightControl);
+        }
+
+        private bool IsShiftKeyPressed()
+        {
+            KeyboardState keyboardState = Keyboard.GetState();
+            return keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift);
         }
 
         // event for handling keyboard input from OS
