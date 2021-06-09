@@ -120,6 +120,10 @@ namespace GameEngineTest.Components
                 {
                     scrollIndex = 0;
                 }
+                else if (scrollIndex > MaxScrollIndex)
+                {
+                    scrollIndex = MaxScrollIndex;
+                }
             }
         }
 
@@ -262,6 +266,14 @@ namespace GameEngineTest.Components
             }
         }
 
+        public string HighlightedText
+        {
+            get
+            {
+                return Text.SubstringByIndexes(HighlightStartIndex, HighlightEndIndex);
+            }
+        }
+
         public TextBox(int x, int y, int width, SpriteFont spriteFont, string defaultText = "", int characterLimit = -1, int borderThickness = 2)
         {
             box = new RectangleGraphic(x, y, width, spriteFont.LineSpacing + (borderThickness * 2));
@@ -382,10 +394,8 @@ namespace GameEngineTest.Components
                 cursorChangeTimer.SetWaitTime(100);
 
                 highlightMode = true;
+                ResetHighlightIndexes();
 
-                highlightCursorIndex = CursorPosition;
-                HighlightStartIndex = CursorPosition;
-                HighlightEndIndex = CursorPosition;
                 clickTimer.Reset();
                 singleClicked = true;
             }
@@ -498,9 +508,7 @@ namespace GameEngineTest.Components
                     keyLocker.UnlockKey(Keys.Right);
                     cursorChangeTimer.SetWaitTime(100);
 
-                    highlightCursorIndex = CursorPosition;
-                    HighlightStartIndex = CursorPosition;
-                    HighlightEndIndex = CursorPosition;
+                    ResetHighlightIndexes();
                     highlightMode = false;
                 }
             }
@@ -555,9 +563,7 @@ namespace GameEngineTest.Components
                     keyLocker.UnlockKey(Keys.Left);
                     cursorChangeTimer.SetWaitTime(100);
 
-                    highlightCursorIndex = CursorPosition;
-                    HighlightStartIndex = CursorPosition;
-                    HighlightEndIndex = CursorPosition;
+                    ResetHighlightIndexes();
                     highlightMode = false;
                 }
             }
@@ -615,9 +621,7 @@ namespace GameEngineTest.Components
                             Text = Text.SubstringByIndexes(0, HighlightStartIndex) + pastedText + Text.SubstringByIndexes(HighlightEndIndex, Text.Length);
                         }
                         CursorPosition = HighlightEndIndex;
-                        highlightCursorIndex = CursorPosition;
-                        HighlightStartIndex = CursorPosition;
-                        HighlightEndIndex = CursorPosition;
+                        ResetHighlightIndexes();
                         highlightMode = false;
                         ResetCursorBlinkTimer();
                     }
@@ -655,7 +659,14 @@ namespace GameEngineTest.Components
             }
         }
 
-        protected virtual void HighlightAllText()
+        protected void ResetHighlightIndexes()
+        {
+            highlightCursorIndex = CursorPosition;
+            HighlightStartIndex = CursorPosition;
+            HighlightEndIndex = CursorPosition;
+        }
+
+        protected void HighlightAllText()
         {
             highlightCursorIndex = 0;
             HighlightStartIndex = 0;
@@ -743,14 +754,8 @@ namespace GameEngineTest.Components
                             }
                             CursorPosition--;
                             ResetCursorBlinkTimer();
-                            if (ScrollIndex > 0)
-                            {
-                                ScrollIndex--;
-                            }
-
-                            highlightCursorIndex = CursorPosition;
-                            HighlightStartIndex = CursorPosition;
-                            HighlightEndIndex = CursorPosition;
+                            ScrollIndex--;
+                            ResetHighlightIndexes();
                             highlightMode = false;
                         }
                     }
@@ -775,9 +780,7 @@ namespace GameEngineTest.Components
 
                         ScrollIndex -= HighlightEndIndex - HighlightStartIndex;
                         CursorPosition = HighlightStartIndex;
-                        highlightCursorIndex = CursorPosition;
-                        HighlightStartIndex = CursorPosition;
-                        HighlightEndIndex = CursorPosition;
+                        ResetHighlightIndexes();
                         highlightMode = false;
                         ResetCursorBlinkTimer();
                     }
@@ -800,10 +803,7 @@ namespace GameEngineTest.Components
                         }
                         CursorPosition++;
                         ResetCursorBlinkTimer();
-
-                        highlightCursorIndex = CursorPosition;
-                        HighlightStartIndex = CursorPosition;
-                        HighlightEndIndex = CursorPosition;
+                        ResetHighlightIndexes();
                         highlightMode = false;
                     }
                     else
@@ -827,9 +827,7 @@ namespace GameEngineTest.Components
 
                         ScrollIndex -= HighlightEndIndex - HighlightStartIndex;
                         CursorPosition = HighlightEndIndex;
-                        highlightCursorIndex = CursorPosition;
-                        HighlightStartIndex = CursorPosition;
-                        HighlightEndIndex = CursorPosition;
+                        ResetHighlightIndexes();
                         highlightMode = false;
                         ResetCursorBlinkTimer();
                     }
